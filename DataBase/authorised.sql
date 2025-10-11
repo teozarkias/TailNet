@@ -1,0 +1,9 @@
+USE dogWalkApp;
+
+CREATE TABLE IF NOT EXISTS AuthUsers(
+  auth_user_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  time_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
