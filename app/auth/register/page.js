@@ -4,7 +4,7 @@ import "./register_page.css"
 import { useState } from "react";
 
 export default function RegisterPage(){
-  const [formData, setFormData ] = userState({
+  const [formData, setFormData ] = useState({
     username: "",
     name: "",
     surname: "",
@@ -21,8 +21,8 @@ export default function RegisterPage(){
   };
 
   return(
-    <div class="register-page">
-      <div class="register-box">
+    <div className="register-page">
+      <div className="register-box">
         <h1>Register</h1>
         <form>
           <input
@@ -49,6 +49,14 @@ export default function RegisterPage(){
             onChange={handleChange}
           />
 
+          <input
+            type="password"
+            name="reapeatPassword"
+            placeholder="reapeat password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+
           <button
             type="submit"
           >
@@ -59,7 +67,7 @@ export default function RegisterPage(){
         <p>
           Already have and account?
           <a href="/auth/login">
-            Login
+              &nbsp;Login
           </a>
         </p>
         
