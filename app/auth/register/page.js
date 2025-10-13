@@ -5,10 +5,10 @@ import { useState } from "react";
 
 export default function RegisterPage(){
   const [formData, setFormData ] = useState({
+    fullname: "",
     username: "",
-    name: "",
-    surname: "",
     password: "",
+    repeatPassword: ""
   });
 
   const handleChange = (e) => {
@@ -17,6 +17,14 @@ export default function RegisterPage(){
 
   const handleSubmit = (e) =>{
     e.preventDefault();
+
+    const {password, repeatPassword} = formData;
+
+    if(password !== repeatPassword){
+      console.log("Passwords dont match");
+      return;
+    }
+
     console.log("Register data: ", formData);
   };
 
@@ -27,16 +35,16 @@ export default function RegisterPage(){
         <form>
           <input
             type="text"
-            name="name"
-            placeholder="Name"
+            name="fullname"
+            placeholder="fullname"
             value={formData.name}
             onChange={handleChange}
           />
           
           <input
             type="text"
-            name="surname"
-            placeholder="Surname"
+            name="username"
+            placeholder="username"
             value={formData.surname}
             onChange={handleChange}
           />
@@ -51,14 +59,15 @@ export default function RegisterPage(){
 
           <input
             type="password"
-            name="reapeatPassword"
+            name="repeatPassword"
             placeholder="reapeat password"
-            value={formData.password}
+            value={formData.repeatPassword}
             onChange={handleChange}
           />
 
           <button
             type="submit"
+            onClick={handleSubmit}
           >
             Dog Walker
           </button>

@@ -3,12 +3,11 @@ USE dogWalkApp;
 CREATE TABLE IF NOT EXISTS Users(
   user_id INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) UNIQUE NOT NULL,
-  name VARCHAR(50) NOT NULL,
-  surname VARCHAR(50) NOT NULL,
-  age INT NOT NULL,
+  fullname VARCHAR(50) NOT NULL,
+  age INT,
 
-  dog_name VARCHAR(50) NOT NULL,
-  dog_breed VARCHAR(50) NOT NULL,
+  dog_name VARCHAR(50),
+  dog_breed VARCHAR(50),
 
   password VARCHAR(50) NOT NULL,
   time_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
