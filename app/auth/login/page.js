@@ -14,7 +14,7 @@ export default function LoginPage(){
 
     const {username, password} = formData;
 
-    //
+    
   }
 
   return(
@@ -42,6 +42,10 @@ export default function LoginPage(){
           >
             Login
           </button>
+
+          <p>Dont have an account? &nbsp;
+            <a href="/auth/register">Register</a>
+          </p>
         </form>
       </div>
     </div>
