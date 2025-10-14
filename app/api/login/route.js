@@ -18,6 +18,4 @@ export async function POST(req) {
 
   if(user) return NextResponse.json({ message: "Login successful"}, { status: 200 });
   else return NextResponse.json({ message: "Invalid credentials"}, { status: 401});
-
-
 }
