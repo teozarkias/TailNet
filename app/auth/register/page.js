@@ -35,17 +35,15 @@ export default function RegisterPage(){
   };
 
 
-  const handleNext = () => setStep((s) => s + 1);
-  const handleBack = () => setStep((s) => s - 1);
-  const [step, setStep] = useState(1);
+  // const handleNext = () => setStep((s) => s + 1);
+  // const handleBack = () => setStep((s) => s - 1);
+  // const [step, setStep] = useState(1);
 
   return(
     <div className="register-page">
       <div className="register-box">
         <h1>Welcome Dog Walker!</h1>
         <form>
-          {step === 1 && (
-          <>
             <input
               type="text"
               name="username"
@@ -84,27 +82,19 @@ export default function RegisterPage(){
             >
               Dog Walker
             </button>
+        </form>
 
-            <div className="BackForthButtons-box">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="text-gray-500 p-2"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                  Next →
-              </button>
-            </div>
-          </>
-          )}
-
-        (step === 2 &&{
+        <p>
+          Already have and account?
+          <a href="/auth/login">
+              &nbsp;Login
+          </a>
+        </p>
+      </div>
+    </div>
+  )
+}
+        /*{ (step === 2 &&{
           <>
             <h1>Tell us about your dog 🐾</h1>
 
@@ -163,6 +153,4 @@ export default function RegisterPage(){
         </p>
 
       </div>
-    </div>
-  )
-}
+    </div> */
