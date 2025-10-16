@@ -31,8 +31,14 @@
   margin-bottom: 1rem;
 }
 
+.register-box input:focus{
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 0 1px rgba(20, 180, 130, 0.2);
+}
 
-.register-box h1 {
+
+.register-box h2 {
   text-align: center;
   color: #222;
   margin-bottom: 1.5rem;
@@ -58,6 +64,31 @@
 .register-box button:hover{
   background-color: rgb(49, 222, 133);
   cursor: pointer;
+}
+
+.register-box select{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #333;
+  font-size: 1rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2310B981' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.register-box select:focus{
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 0 1px rgba(20, 180, 130, 0.2);
+}
+
+.register-box option{
+  padding: 10px;
 }
 
 .register-box a{

@@ -6,7 +6,7 @@ export async function POST(req) {
   const { username, password } = await req.json();
 
   const db = await open({
-    filename: "/DataBase/users.sql",
+    filename: "DataBase/dogWalkApp.db",
     driver: sqlite3.Database,
   });
 

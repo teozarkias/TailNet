@@ -1,11 +1,13 @@
 CREATE TABLE IF NOT EXISTS Users (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
   fullname TEXT NOT NULL,
   age INTEGER,
+  sex TEXT,
   dog_name TEXT,
   dog_breed TEXT,
-  password_hash TEXT NOT NULL,
+  dog_sex TEXT,
   time_created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -27,3 +29,5 @@ CREATE TABLE IF NOT EXISTS AuthUsers (
   time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+ALTER TABLE Users ADD COLUMN photo_url TEXT;
