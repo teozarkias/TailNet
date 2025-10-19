@@ -3,11 +3,11 @@ CREATE TABLE IF NOT EXISTS Users (
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   fullname TEXT NOT NULL,
-  age INTEGER,
-  sex TEXT,
-  dog_name TEXT,
-  dog_breed TEXT,
-  dog_sex TEXT,
+  age INTEGER NOT NULL,
+  sex TEXT NOT NULL,
+  dog_name TEXT NOT NULL,
+  dog_breed TEXT NOT NULL,
+  dog_sex TEXT NOT NULL,
   time_created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

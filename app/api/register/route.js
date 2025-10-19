@@ -2,51 +2,71 @@ import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import bcrypt from "bcrypt";
-import path from "path";
 
 export async function POST(req) {
   try {
-    const { fullname, username, password } = await req.json();
+    const {
+      username,
+      password,
+      fullname,
+      age,
+      sex,
+      dog_name,
+      dog_breed,
+      dog_sex,
+      photo_url
+    } = await req.json();
 
-    // Store values in an array
-    const fields =[
-      { name: "fullname", value: fullname},
-      { name: "username", value: username},
-      { name: "password", value: password}
-    ]
-    
-    // Check if fields are valid 
-    for(const field of fields){
-      if(!field.value){
-        return NextResponse.json({ message: `${field.name} is required`}, {status: 400});
-      }
+
+    // Require all fields except photo
+    if (!username || !password || !fullname || !age || !sex || !dog_name || !dog_breed || !dog_sex) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
+
+    // Open database
     const db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });
 
 
-    // Check if user is valid
-    const user = await db.get("SELECT * FROM Users WHERE userename = ?", [username]);
-
-    if(!user){
-      return NextResponse.json({ message: "Invalid Credentials"}, { status:401 });
+    // Check if username exists
+    const existing = await db.get("SELECT * FROM Users WHERE username = ?", [username]);
+    if (existing) {
+      return NextResponse.json(
+        { message: "Username already exists" },
+        { status: 409 }
+      );
     }
 
+    const hash = await bcrypt.hash(password, 10);
 
-    // Check if password is valid
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    // Put data in DataBase
+    await db.run(
+      `INSERT INTO Users
+        (username, password_hash, fullname, age, sex, dog_name, dog_breed, dog_sex, photo_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        username,
+        hash,
+        fullname,
+        age,
+        sex,
+        dog_name,
+        dog_breed,
+        dog_sex,
+        photo_url ?? null
+      ]
+    );
 
-    if(!isValidPassword){
-      return NextResponse.json({ message: "Invalid password"}, { status:401 });
-    }
-
-
-
-    return NextResponse.json({ message: "Login successful", user: { id:user.user_id, username}}, { status: 200 });
-
+    return NextResponse.json(
+      { message: "User registered successfully" },
+      { status: 201 }
+    );
 
   } catch (error) {
     console.error("Error registering user:", error);

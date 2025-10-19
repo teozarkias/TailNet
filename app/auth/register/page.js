@@ -16,8 +16,39 @@ export default function RegisterPage() {
     dog_breed: "",
     dog_sex: "",
     photo: null,
+    photoPreview:"",
   });
 
+
+  // Dont let user skip fields
+  const validateStep = () => {
+    if(step === 1){
+      if(!formData.username || !formData.password || !formData.repeatPassword){
+        alert("Complete all the fields");
+        return false;
+      }
+    }
+
+    if(step === 2){
+      if(!formData.fullname || !formData.age || !formData.sex){
+        alert("Complete all the fields");
+        return false;
+      }
+    }
+
+    if(step === 3){
+      if(!formData.dog_name || !formData.dog_breed || !formData.dog_sex){
+        alert("Complete all the fields")
+        return false;
+      }
+    }
+
+    return true; //Let user not post a photo now
+  }
+
+
+
+  // Handle functions
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,19 +63,25 @@ export default function RegisterPage() {
     }
 
     console.log("Register data:", formData);
-    alert("Registration complete! 🎉");
-    // here you’ll POST formData to /api/register
+    alert("Registration complete!");
   };
 
+
   const [step, setStep] = useState(1);
+
   const handleNext = (e) => {
     e.preventDefault();
-    setStep((s) => s + 1);
+    if(validateStep()){
+      setStep((s) => s + 1);
+    }
   };
+
   const handleBack = (e) => {
     e.preventDefault();
     setStep((s) => s - 1);
   };
+
+
 
   return (
     <div className="register-page">
@@ -176,13 +213,26 @@ export default function RegisterPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        photo: e.target.files[0],
-                      })
-                    }
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          photo: file,
+                          photoPreview: reader.result,
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    }}
                   />
+
+                  {formData.photoPreview && (
+                    <div className="photo-preview">
+                      <img src={formData.photoPreview} alt="Preview" />
+                    </div>
+                  )}
 
                   <div className="buttons-box">
                     <button onClick={handleBack}>←</button>
