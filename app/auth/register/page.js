@@ -3,6 +3,7 @@
 import "./register_page.css";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { form } from "framer-motion/client";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -20,9 +21,14 @@ export default function RegisterPage() {
   });
 
 
-  // Dont let user skip fields
+  // Handle un-verified moves in every step
   const validateStep = () => {
     if(step === 1){
+      if(formData.password !== formData.repeatPassword){
+        alert("Passwords dont match");
+        return false;
+      }
+
       if(!formData.username || !formData.password || !formData.repeatPassword){
         alert("Complete all the fields");
         return false;
