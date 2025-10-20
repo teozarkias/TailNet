@@ -1,0 +1,15 @@
+.main-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #10B981;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 350px;
+  background-color: white;
+  
+}

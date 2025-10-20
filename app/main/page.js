@@ -21,17 +21,23 @@ export default function MainPage(){
 
 
   const handleLike = () => {
-    alert("Liked: ", users[index]);
-    setIndex(index + 1);
+    alert(`Liked: ${users[index].username}`);
+    setIndex((prev) => prev + 1);
   }
 
-  
   const handleDislike = () => {
-    alert("Disliked: ", users[index]);
-    setIndex(index + 1);
+    alert(`Disliked: ${users[index].username}`);
+    setIndex((prev) => prev + 1);
   }
 
 
+  if(users.length === 0){
+    return <h2 style={{textAlign:"center"}}>Loading profiles...</h2>;
+  }
+
+  if(index >= users.length){
+    return <h2 style={{textAlign:"center"}}>No more users around</h2>;
+  }
 
   const user = users[index];
 
@@ -61,7 +67,7 @@ export default function MainPage(){
 
         <div className="buttons-box">
           <button className="like" onClick={handleLike}>❤️</button>
-          <button className="Dislike" onClick={handleDislike}>✖️</button>
+          <button className="dislike" onClick={handleDislike}>✖️</button>
         </div>
       </div>
     </div>
