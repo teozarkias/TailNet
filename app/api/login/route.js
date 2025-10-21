@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import bcrypt from "bcrypt";
 
 export async function POST(req) {
   try {
@@ -11,42 +12,39 @@ export async function POST(req) {
       driver: sqlite3.Database,
     });
 
-    // Get user and check
+    // Check if username - password are valid
     const user = await db.get(
-      "SELECT * FROM Users WHERE username = ? AND password = ?",
-      [username, password]
+      "SELECT * FROM Users WHERE username = ?",
+      [username]
     );
 
-    if(!user){
+    if (!user) {
       return NextResponse.json(
-        { message: "Invalid credentials" }, 
-        { status: 401}
-      );
-    }
-
-    // Compare passwords
-    const valid = await bcrypt.compare(password, user.password_hash);
-
-    if(!valid){
-      return NextResponse.json(
-        { message: "Invalid password" },
+        { message: "Invalid username or password" },
         { status: 401 }
       );
     }
 
-    
+    // Compare hash with bcrypt
+    const valid = await bcrypt.compare(password, user.password_hash);
+
+    if (!valid) {
+      return NextResponse.json(
+        { message: "Invalid username or password" },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
       { message: "Login successful", user: { id: user.user_id, username } },
       { status: 200 }
     );
 
   } catch (error) {
-      console.log("Error: ", error);
-      
-      return NextResponse.json(
-        { message: "Server error" },
-        { status: 200 }
-      );
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
   }
-
 }

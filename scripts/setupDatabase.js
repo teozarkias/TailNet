@@ -1,13 +1,27 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import fs from "fs";
 
-const db = await open({
-  filename: "DataBase/dogWalkApp.db",
-  driver: sqlite3.Database,
-});
+async function setupDatabase() {
+  try {
+    // Delete DB if exists
+    if (fs.existsSync("DataBase/dogWalkApp.db")) {
+      fs.unlinkSync("DataBase/dogWalkApp.db");
+    }
 
-const tables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
-console.log("📋 Tables in your database:");
-console.log(tables);
+    const db = await open({
+      filename: "DataBase/dogWalkApp.db",
+      driver: sqlite3.Database,
+    });
 
-await db.close();
+    const schema = fs.readFileSync("DataBase/schema/db.sql", "utf8");
+    await db.exec(schema);
+
+    console.log("Database initialized successfully!");
+    await db.close();
+  } catch (err) {
+    console.error("Error initializing DB:", err);
+  }
+}
+
+setupDatabase();

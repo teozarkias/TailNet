@@ -1,6 +1,5 @@
 "use client";
 
-import { NextResponse } from "next/server";
 import "./login_page.css"
 import { useState } from "react";
 
@@ -17,21 +16,20 @@ export default function LoginPage(){
   };
 
 
-  const handelSubmit = async (e) => {
-    e.preventDefault;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-
-      const req = await fetch("api/login",{
+      const req = await fetch("/api/login",{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
 
-      const data = req.json();
+      const data = await req.json();
 
       if(req.ok){
-        setMessage("Login successful!");
+        alert("Login successful!");
         window.location.href = "/main";
       } else{
         // Pints the pre-default wrong of data
@@ -50,7 +48,7 @@ export default function LoginPage(){
       <div className="login-box">
         <h1>Login</h1>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="username"

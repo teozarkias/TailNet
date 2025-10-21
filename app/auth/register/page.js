@@ -3,7 +3,6 @@
 import "./register_page.css";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { form } from "framer-motion/client";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -21,6 +20,8 @@ export default function RegisterPage() {
   });
 
 
+  const [step, setStep] = useState(1);
+  
   // Handle un-verified moves in every step
   const validateStep = () => {
     if(step === 1){
@@ -62,18 +63,37 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { password, repeatPassword } = formData;
+    const { password, repeatPassword, photo, ...rest } = formData;
     if (password !== repeatPassword) {
       alert("Passwords don’t match!");
       return;
     }
 
-    console.log("Register data:", formData);
-    alert("Registration complete!");
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...rest,
+          password,
+          photo_url: formData.photoPreview || null
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Registration successful!");
+        window.location.href = "/auth/login";
+      } else {
+        alert(data.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong...");
+    }
   };
 
-
-  const [step, setStep] = useState(1);
 
   const handleNext = (e) => {
     e.preventDefault();
@@ -100,7 +120,7 @@ export default function RegisterPage() {
           ></div>
         </div>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <AnimatePresence mode="wait">
             <motion.div
               key={step}

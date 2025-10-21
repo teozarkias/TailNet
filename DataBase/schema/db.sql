@@ -31,3 +31,5 @@ CREATE TABLE IF NOT EXISTS AuthUsers (
 );
 
 ALTER TABLE Users ADD COLUMN photo_url TEXT;
+
+SELECT username, password_hash FROM Users;

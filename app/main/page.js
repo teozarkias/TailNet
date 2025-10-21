@@ -8,7 +8,7 @@ export default function MainPage(){
   const [index, setIndex] = useState(0);
   const currentUserId = 1;
 
-  // Fetching 
+  // Fetching users 
   useEffect(() => {
     async function fetchUsers() {
       const res = await fetch(`/api/users?exclude=${currentUserId}`);
@@ -44,7 +44,7 @@ export default function MainPage(){
   return(
     <div className="main-page">
       <div className="card">
-        <h2>Add name of user</h2>  <hr></hr>
+        <h2>{user.username}</h2>  <hr></hr>
         <img
           src={user.photo_url}
           alt="User n Dog Pic"
