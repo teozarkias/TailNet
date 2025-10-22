@@ -33,3 +33,15 @@ CREATE TABLE IF NOT EXISTS AuthUsers (
 ALTER TABLE Users ADD COLUMN photo_url TEXT;
 
 SELECT username, password_hash FROM Users;
+
+
+
+CREATE TABLE IF NOT EXISTS LikesDislikes (
+  likes_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  liked_id INTEGER NOT NULL,
+  liker_id INTEGER NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('like', 'dislike')),
+  UNIQUE(liked_id, liker_id)
+);
+
+

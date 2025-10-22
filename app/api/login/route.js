@@ -12,6 +12,7 @@ export async function POST(req) {
       driver: sqlite3.Database,
     });
 
+
     // Check if username - password are valid
     const user = await db.get(
       "SELECT * FROM Users WHERE username = ?",
