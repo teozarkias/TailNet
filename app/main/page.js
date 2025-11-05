@@ -1,7 +1,8 @@
 "use client";
 import "./main-style.css"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
+import { pre } from "framer-motion/client";
 
 export default function MainPage(){
 
@@ -11,7 +12,7 @@ export default function MainPage(){
 
   const x = useMotionValue(0);
   const controls = useAnimation();
-
+  const [openSettings, setOpenSettings] = useState(false);
   // Fetching users 
   useEffect(() => {
     async function fetchUsers() {
@@ -20,25 +21,32 @@ export default function MainPage(){
       setUsers(data.users || []);
     }
     fetchUsers();
-  // Dependency array
+  // Dependency array [] (runs things once, not after every render) 
+  // (prevents lags, too many API requests, infinite loops possibly)
   }, []);
 
 
-  const handleLike = () => {
-    controls.start({ x: 500, opacity: 0 }).then(() => {
-    setIndex(prev => prev + 1);
-    controls.set({ x: 0, opacity: 1 });
-    });
-  };
+  const SWIPE_DISTANCE = 500;
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const handleDislike = () => {
-    controls.start({ x: -500, opacity: 0 }).then(() => {
-      setIndex(prev => prev + 1);
+  const controlsStart = useCallback(async (direction) => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    try {
+      await controls.start({
+        x: direction,
+        opacity: 0,
+        transition: { duration: 0.25 }
+      });
+      setIndex((prev) => prev + 1);
       controls.set({ x: 0, opacity: 1 });
-    });
-  };
+    } finally {
+      setIsAnimating(false);
+    }
+  }, [controls, isAnimating]);
 
-
+  const handleLike = () => controlsStart(+SWIPE_DISTANCE);
+  const handleDislike = () => controlsStart(-SWIPE_DISTANCE);
 
   if(users.length === 0){
     return <h2 style={{textAlign:"center"}}>Loading profiles...</h2>;
@@ -63,8 +71,53 @@ export default function MainPage(){
     }
   };
 
+  handleLogout = () => {
+    
+  }
+
+
   return (
     <div className="main-page">
+      <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+        > 🐾 </button>
+
+      {openSettings && (
+        <>
+          <div className="settings-menu">
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/liked-disliked"></a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches"></a>
+            </div>
+
+            <div className="settings-menu-toProfile">
+              <a href="/users"></a>
+            </div>
+
+            <hr></hr>
+
+            <div className="setting-menu-Logout">
+              <button
+                className="logout-button"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+
+
+
+      </div>
       <motion.div
         className="card"
         drag="x"
@@ -88,8 +141,8 @@ export default function MainPage(){
         <p>Owner: {user.fullname}, {user.age}</p>
 
         <div className="buttons-box">
-          <button className="like" onClick={handleLike}>❤️</button>
-          <button className="dislike" onClick={handleDislike}>✖️</button>
+          <button className="dislike" onClick={handleDislike} disable={isAnimating}>✖️</button>
+          <button className="like" onClick={handleLike} disable={isAnimating}>❤️</button>
         </div>
       </motion.div>
     </div>
