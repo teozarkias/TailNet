@@ -47,5 +47,9 @@ export async function POST(req) {
       { message: "Server error" },
       { status: 500 }
     );
+  } finally {
+    if(db){
+      db.close();
+    }
   }
 }

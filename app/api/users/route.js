@@ -13,9 +13,11 @@ export async function GET(req) {
     });
 
     const users = await db.all(
-      `SELECT user_id, username, fullname, age, sex, dog_name, dog_breed, dog_sex, photo_url
-       FROM Users
-       WHERE user_id != ?`,
+      `
+      SELECT user_id, username, fullname, age, sex, dog_name, dog_breed, dog_sex, photo_url
+      FROM Users
+      WHERE user_id != ?
+       `,
       [excludeId]
     );
 
@@ -27,5 +29,9 @@ export async function GET(req) {
       { message: "Server error" },
       { status: 500 }
     );
+  } finally {
+    if(db){
+      await db.close();
+    }
   }
 }

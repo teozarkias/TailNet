@@ -44,4 +44,3 @@ CREATE TABLE IF NOT EXISTS LikesDislikes (
   UNIQUE(liked_id, liker_id)
 );
 
-

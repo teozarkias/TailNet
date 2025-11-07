@@ -32,7 +32,7 @@ export default function LoginPage(){
         alert("Login successful!");
         window.location.href = "/main";
       } else{
-        // Pints the pre-default wrong of data
+        // Prints the pre-default wrong of data
         setMessage(`${data.message}`);
       }
 

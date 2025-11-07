@@ -1,0 +1,69 @@
+.matches-page {
+  min-height: 100vh;
+  background-color: #10b981; /* same green background */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.matches-page h2 {
+  color: white;
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+/* Grid of match cards */
+.matches-box {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Each match card */
+.match-card {
+  background: white;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  text-decoration: none;
+  color: #222;
+  border: 1px solid white;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.match-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+/* Match profile picture */
+.match-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+/* Text styling */
+.match-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.match-info strong {
+  font-size: 1.1rem;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.match-info span {
+  color: #555;
+  font-size: 0.95rem;
+}

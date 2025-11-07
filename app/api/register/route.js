@@ -47,9 +47,11 @@ export async function POST(req) {
 
     // Put data in DataBase
     await db.run(
-      `INSERT INTO Users
-        (username, password_hash, fullname, age, sex, dog_name, dog_breed, dog_sex, photo_url)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `
+      INSERT INTO Users
+      (username, password_hash, fullname, age, sex, dog_name, dog_breed, dog_sex, photo_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
       [
         username,
         hash,
@@ -74,5 +76,9 @@ export async function POST(req) {
       { message: "Server error", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if(db){
+      await db.close();
+    }
   }
 }
