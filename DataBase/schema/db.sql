@@ -43,4 +43,3 @@ CREATE TABLE IF NOT EXISTS LikesDislikes (
   status TEXT NOT NULL CHECK(status IN ('like', 'dislike')),
   UNIQUE(liked_id, liker_id)
 );
-

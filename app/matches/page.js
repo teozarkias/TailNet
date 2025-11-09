@@ -46,10 +46,8 @@ export default function MatchesPage(){
               alt="Owner-Dog photo"
               style={{ width: "80px", height: "80px", borderRadius: "10px" }}
             />
-            <div>
-              <h3>{m.username}</h3>
-              <p>{m.dog_name}</p>
-            </div>
+            <h3>{m.username}</h3>
+            <p>{m.dog_name}, {m.dog_breed}</p>
           </div>
         ))}
       </div>

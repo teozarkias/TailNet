@@ -1,0 +1,80 @@
+.likesDislikes-page {
+  min-height: 100vh;
+  background-color: #10b981;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.likesDislikes-page h2 {
+  color: white;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.likesDislikes-page h3 {
+  color: white;
+  margin: 12px 0 6px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* Container for the list */
+.likesDislikes-box {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Shared card style */
+.likes-box,
+.dislikes-box {
+  background-color: white;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.likes-box:hover,
+.dislikes-box:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.likes-box img,
+.dislikes-box img {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.likes-box h3,
+.dislikes-box h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.likes-box p,
+.dislikes-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.likes-box {
+  border-left: 6px solid #10b981;
+}
+
+.dislikes-box {
+  border-left: 6px solid #ff4d4d; 
+}

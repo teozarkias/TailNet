@@ -13,14 +13,14 @@ export async function GET() {
 
     const matches = await db.all(
       `
-      SELECT u.user_id, u.username, u.photo_url, u.dog_name
+      SELECT u.user_id, u.username, u.photo_url, u.dog_name, u.dog_breed
       FROM Matches m
       JOIN Users u ON u.user_id = m.user_id2
       WHERE m.user_id2 = ?
 
       UNION 
 
-      SELECT u.user_id AS id, u.username, u.photo_url, u.dog_name
+      SELECT u.user_id AS id, u.username, u.photo_url, u.dog_name, u.dog_breed
       FROM Matches m
       JOIN Users u ON u.user_id = m.user_id1
       WHERE m.user_id2 = ?
