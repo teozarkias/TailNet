@@ -29,6 +29,9 @@ export default function MainPage(){
   const SWIPE_DISTANCE = 500;
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // useCallBack helps the page to not re-render pieces that dont need to be re-rendered
+  // when something changes. The only part that changes is the part inside useCallBack
+  // React basically "remembers" the function inside useCallBack
   const controlsStart = useCallback(async (direction) => {
     if (isAnimating) return;
     setIsAnimating(true);

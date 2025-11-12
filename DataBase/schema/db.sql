@@ -35,11 +35,14 @@ ALTER TABLE Users ADD COLUMN photo_url TEXT;
 SELECT username, password_hash FROM Users;
 
 
-
-CREATE TABLE IF NOT EXISTS LikesDislikes (
-  likes_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  liked_id INTEGER NOT NULL,
-  liker_id INTEGER NOT NULL,
-  status TEXT NOT NULL CHECK(status IN ('like', 'dislike')),
-  UNIQUE(liked_id, liker_id)
+CREATE TABLE IF NOT EXISTS UserInteraction (
+  interaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  target_user_id INTEGER NOT NULL,
+  interaction TEXT NOT NULL CHECK(interaction in('like', 'dislike')),
+  time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (target_user_id) REFERENCES Users(target_user_id) ON DELETE CASCADE,
+  UNIQUE(user_id, target_user_id)
 );
+

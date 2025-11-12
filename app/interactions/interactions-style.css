@@ -1,4 +1,4 @@
-.likesDislikes-page {
+.interactions-page {
   min-height: 100vh;
   background-color: #10b981;
   padding: 20px;
@@ -7,13 +7,13 @@
   align-items: center;
 }
 
-.likesDislikes-page h2 {
+.interactions-page h2 {
   color: white;
   margin-bottom: 16px;
   text-align: center;
 }
 
-.likesDislikes-page h3 {
+.interactions-page h3 {
   color: white;
   margin: 12px 0 6px;
   font-size: 1.2rem;
@@ -21,7 +21,7 @@
 }
 
 /* Container for the list */
-.likesDislikes-box {
+.interactions-box {
   width: 100%;
   max-width: 380px;
   display: flex;

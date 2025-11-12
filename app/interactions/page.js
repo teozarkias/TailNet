@@ -1,22 +1,22 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 
-export default function LikesDislikes(){
+export default function Interactions(){
 
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch LikesDislikes
+  // Fetch interactions
   useEffect(() => {
     (async () => {
         try {
-          const res = await fetch("/api/liked-disliked");
+          const res = await fetch("/api/interactions");
           const data = await res.json();
           setLikes(data.likes || []);
           setDislikes(data.dislikes || []);
         } catch (error) {
-          console.log("Error fetching likes-dislikes:", error);
+          console.log("Error fetching interactions:", error);
         }finally{
           setLoading(false);
         }
@@ -37,13 +37,13 @@ export default function LikesDislikes(){
 
 
   return(
-    <div className="likesDislikes-page">
-      <h2>Likes-Dislikes</h2>
+    <div className="interactions-page">
+      <h2>Interactions</h2>
 
-      <div className="likesDislikes-box">
+      <div className="interactions-box">
 
         {likes.map((l) => (
-          <div className="likesDislikes-box">
+          <div className="interactions-box">
             <div className="likes-box" key={l.id}>
               <img
                 src={l.photo_url}
