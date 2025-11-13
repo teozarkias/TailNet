@@ -45,4 +45,3 @@ CREATE TABLE IF NOT EXISTS UserInteraction (
   FOREIGN KEY (target_user_id) REFERENCES Users(target_user_id) ON DELETE CASCADE,
   UNIQUE(user_id, target_user_id)
 );
-

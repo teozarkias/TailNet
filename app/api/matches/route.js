@@ -7,10 +7,10 @@ export async function GET() {
     const currentId = 1;
 
     const db = await open({
-      filename : "Database/dogWalkApp.db",
+      filename : "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
-    })
-
+    });
+    
     const matches = await db.all(
       `
       SELECT u.user_id, u.username, u.photo_url, u.dog_name, u.dog_breed
