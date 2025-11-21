@@ -2,34 +2,59 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function GET(){
-  try {
-    const currentId = 1;
+export async function GET(req) {
+  let db;
 
-    const db = await open({
+  try {
+    // 🔹 Read user_id from the query string: /api/profile?user_id=1
+    const { searchParams } = new URL(req.url);
+    const userId = Number(searchParams.get("user_id"));
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "user_id missing" },
+        { status: 400 }
+      );
+    }
+
+    db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });
 
-    const profile = await db.all(
+    // 🔹 Get exactly one row
+    const profile = await db.get(
       `
-      SELECT u.username, u.fullname, u.age, u.sex, u.dog_name, u.dog_breed, u.dog_sex
-      FROM Users u
-      WHERE u.user_id = ?
-      `, [currentId]
+      SELECT 
+        username,
+        fullname,
+        age,
+        sex,
+        dog_name,
+        dog_breed,
+        dog_sex,
+        photo_url
+      FROM Users
+      WHERE user_id = ?
+      `,
+      [userId]
     );
 
-    return NextResponse.json({ profile }, { status: 200});
+    if (!profile) {
+      return NextResponse.json(
+        { message: "Profile not found" },
+        { status: 404 }
+      );
+    }
 
+    return NextResponse.json({ profile }, { status: 200 });
   } catch (error) {
-    console.log("Error in /api/profile");
-    NextResponse.json(
+    console.log("Error in /api/profile:", error);
+    return NextResponse.json(
       { message: "Server error" },
       { status: 500 }
     );
-  } finally{
-    if(db){
-      await db.close();
-    }
+  } finally {
+    if (db) await db.close();
   }
 }

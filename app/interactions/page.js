@@ -1,8 +1,9 @@
 "use client";
+import "./interactions-style.css";
 import { useEffect, useState, useCallback } from "react";
 
 export default function Interactions(){
-
+  
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [loading, setLoading] = useState(true);

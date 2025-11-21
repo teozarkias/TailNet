@@ -45,3 +45,16 @@ CREATE TABLE IF NOT EXISTS UserInteraction (
   FOREIGN KEY (target_user_id) REFERENCES Users(target_user_id) ON DELETE CASCADE,
   UNIQUE(user_id, target_user_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS Conversations (
+  conversation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  match_id INTEGER NOT NULL,
+  user1_id INTEGER NOT NULL,
+  user2_id INTEGER NOT NULL,
+  time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user1_id, user2_id),
+  FOREIGN KEY (match_id) REFERENCES Matches(match_id),
+  FOREIGN KEY (user1_id) REFERENCES Users(user_id),
+  FOREIGN KEY (user2_id) REFERENCES Users(user_id)
+);

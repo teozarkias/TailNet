@@ -3,11 +3,14 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
 export async function GET(req) {
+
+  let db;
   try {
+    
     const { searchParams } = new URL(req.url);
     const excludeId = searchParams.get("exclude");
 
-    const db = await open({
+    db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });

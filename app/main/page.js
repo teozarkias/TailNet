@@ -1,83 +1,104 @@
 "use client";
-import "./main-style.css"
+import "./main-style.css";
 import { useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
-import { pre } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 
-export default function MainPage(){
-
+export default function MainPage() {
   const [users, setUsers] = useState([]);
   const [index, setIndex] = useState(0);
-  const currentUserId = 1;
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   const x = useMotionValue(0);
   const controls = useAnimation();
-  const [openSettings, setOpenSettings] = useState(false);
-  // Fetching users 
-  useEffect(() => {
-    async function fetchUsers() {
-      const res = await fetch(`/api/users?exclude=${currentUserId}`);
-      const data = await res.json();
-      setUsers(data.users || []);
-    }
-    fetchUsers();
-  // Dependency array [] (runs things once, not after every render) 
-  // (prevents lags, too many API requests, infinite loops possibly)
-  }, []);
+  const router = useRouter();
 
+  // Read current user from localStorage
+  useEffect(() => {
+    const id = localStorage.getItem("currentUserId");
+
+    if (!id) {
+      // Not logged in → go back to login
+      router.push("/auth/login"); // or "/login" depending on your route
+      return;
+    }
+
+    setCurrentId(id);
+  }, [router]);
+
+  // Fetch users once we know currentId
+  useEffect(() => {
+    if (!currentId) return;
+
+    async function fetchUsers() {
+      try {
+        const res = await fetch(`/api/users?exclude=${currentId}`);
+        const data = await res.json();
+        setUsers(data.users || []);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      } finally {
+        setLoadingUsers(false);
+      }
+    }
+
+    fetchUsers();
+  }, [currentId]);
 
   const SWIPE_DISTANCE = 500;
-  const [isAnimating, setIsAnimating] = useState(false);
 
-  // useCallBack helps the page to not re-render pieces that dont need to be re-rendered
-  // when something changes. The only part that changes is the part inside useCallBack
-  // React basically "remembers" the function inside useCallBack
-  const controlsStart = useCallback(async (direction) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    try {
-      await controls.start({
-        x: direction,
-        opacity: 0,
-        transition: { duration: 0.25 }
-      });
-      setIndex((prev) => prev + 1);
-      controls.set({ x: 0, opacity: 1 });
-    } finally {
-      setIsAnimating(false);
-    }
-  }, [controls, isAnimating]);
+  const controlsStart = useCallback(
+    async (direction) => {
+      if (isAnimating) return;
+      setIsAnimating(true);
+      try {
+        await controls.start({
+          x: direction,
+          opacity: 0,
+          transition: { duration: 0.25 },
+        });
+        setIndex((prev) => prev + 1);
+        controls.set({ x: 0, opacity: 1 });
+      } finally {
+        setIsAnimating(false);
+      }
+    },
+    [controls, isAnimating]
+  );
 
   const handleLike = () => controlsStart(+SWIPE_DISTANCE);
   const handleDislike = () => controlsStart(-SWIPE_DISTANCE);
 
-  if(users.length === 0){
-    return <h2 style={{textAlign:"center"}}>Loading profiles...</h2>;
-  }
-
-  if(index >= users.length){
-    return <h2 style={{textAlign:"center"}}>No more users around</h2>;
-  }
-
-  const user = users[index];
-
   const handleDragEnd = (_, info) => {
     if (info.offset.x > 120) {
-      // Swipe Right = Like
       handleLike();
     } else if (info.offset.x < -120) {
-      // Swipe Left = Dislike
       handleDislike();
     } else {
-      // Not enough swipe → snap back
       controls.start({ x: 0, rotate: 0 });
     }
   };
 
-  handleLogout = () => {
-    
+  // 3️⃣ Proper logout: clear localStorage and go to login
+  const handleLogout = () => {
+    localStorage.removeItem("currentUserId");
+    // If you ever add an /api/logout, call it here too
+    router.push("/auth/login"); // NOTE the leading slash
+  };
+
+  // 4️⃣ Loading / empty states
+  if (loadingUsers) {
+    return <h2 style={{ textAlign: "center" }}>Loading profiles...</h2>;
   }
 
+  if (!users.length || index >= users.length) {
+    return <h2 style={{ textAlign: "center" }}>No more users around</h2>;
+  }
+
+  const user = users[index];
 
   return (
     <div className="main-page">
@@ -86,41 +107,36 @@ export default function MainPage(){
           className="settings-button"
           aria-label="Open settings"
           aria-expanded={openSettings}
-        > 🐾 </button>
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
 
-      {openSettings && (
-        <>
+        {openSettings && (
           <div className="settings-menu">
             <div className="setting-menu-toLikedDisliked">
-              <a href="/liked-disliked"></a>
+              <a href="/interactions">Interactions</a>
             </div>
 
             <div className="settings-menu-toMatches">
-              <a href="/matches"></a>
+              <a href="/matches">Matches</a>
             </div>
 
             <div className="settings-menu-toProfile">
-              <a href="/users"></a>
+              <a href="/profile">Profile</a>
             </div>
 
-            <hr></hr>
+            <hr />
 
             <div className="setting-menu-Logout">
-              <button
-                className="logout-button"
-                onClick={handleLogout}
-              >
+              <button className="logout-button" onClick={handleLogout}>
                 Logout
               </button>
             </div>
           </div>
-        </>
-      )}
-
-
-
-
+        )}
       </div>
+
       <motion.div
         className="card"
         drag="x"
@@ -141,14 +157,27 @@ export default function MainPage(){
 
         <h2>{user.dog_name}</h2>
         <p>{user.dog_breed}</p>
-        <p>Owner: {user.fullname}, {user.age}</p>
+        <p>
+          Owner: {user.fullname}, {user.age}
+        </p>
 
         <div className="buttons-box">
-          <button className="dislike" onClick={handleDislike} disable={isAnimating}>✖️</button>
-          <button className="like" onClick={handleLike} disable={isAnimating}>❤️</button>
+          <button
+            className="dislike"
+            onClick={handleDislike}
+            disabled={isAnimating}
+          >
+            ✖️
+          </button>
+          <button
+            className="like"
+            onClick={handleLike}
+            disabled={isAnimating}
+          >
+            ❤️
+          </button>
         </div>
       </motion.div>
     </div>
   );
-
 }

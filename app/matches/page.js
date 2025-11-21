@@ -1,4 +1,5 @@
 "use client";
+import "./matches-style.css";
 import { useEffect, useState, useCallback } from "react";
 import { pre } from "framer-motion/client";
 

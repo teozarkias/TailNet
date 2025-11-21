@@ -2,18 +2,20 @@ import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import bcrypt from "bcrypt";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
+  let db;
+
   try {
     const { username, password } = await req.json();
 
-    const db = await open({
+    db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });
 
-
-    // Check if username - password are valid
+    // Find user by username
     const user = await db.get(
       "SELECT * FROM Users WHERE username = ?",
       [username]
@@ -26,7 +28,7 @@ export async function POST(req) {
       );
     }
 
-    // Compare hash with bcrypt
+    // Compare password with hash
     const valid = await bcrypt.compare(password, user.password_hash);
 
     if (!valid) {
@@ -36,8 +38,18 @@ export async function POST(req) {
       );
     }
 
+    // Set cookie for server-side use
+    cookies().set("user_id", String(user.user_id), {
+      httpOnly: true,
+      secure: false,
+      path: "/",
+    });
+
     return NextResponse.json(
-      { message: "Login successful", user: { id: user.user_id, username } },
+      {
+        message: "Login successful",
+        user: { id: user.user_id, username: user.username },
+      },
       { status: 200 }
     );
 
@@ -48,8 +60,8 @@ export async function POST(req) {
       { status: 500 }
     );
   } finally {
-    if(db){
-      db.close();
+    if (db) {
+      await db.close();
     }
   }
 }

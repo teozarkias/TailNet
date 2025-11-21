@@ -4,6 +4,8 @@ import { open } from "sqlite";
 import bcrypt from "bcrypt";
 
 export async function POST(req) {
+  
+  let db;
   try {
     const {
       username,
@@ -28,7 +30,7 @@ export async function POST(req) {
 
 
     // Open database
-    const db = await open({
+    db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });

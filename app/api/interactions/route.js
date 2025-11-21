@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { cookies } from "next/headers";
 
 export async function GET(){
+  
+  let db;
   try {
-    const currentUserId = 1;
 
-    const db = await open({
+    const cookieStore = cookies();
+    const currentId = Number(cookieStore.get("user_id")?.value);
+
+    db = await open({
       filename: "DataBase/dogWalkApp.db",
       driver: sqlite3.Database,
     });

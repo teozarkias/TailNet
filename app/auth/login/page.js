@@ -29,6 +29,7 @@ export default function LoginPage(){
       const data = await req.json();
 
       if(req.ok){
+        localStorage.setItem("currentUserId", data.user.id);  
         alert("Login successful!");
         window.location.href = "/main";
       } else{
