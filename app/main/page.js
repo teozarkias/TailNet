@@ -5,24 +5,27 @@ import { motion, useMotionValue, useAnimation } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export default function MainPage() {
+
+  // Users
   const [users, setUsers] = useState([]);
   const [index, setIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [openSettings, setOpenSettings] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
+  // Animation 
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const x = useMotionValue(0);
   const controls = useAnimation();
+
+  // Route Helper
   const router = useRouter();
 
-  // Read current user from localStorage
   useEffect(() => {
     const id = localStorage.getItem("currentUserId");
 
     if (!id) {
-      // Not logged in → go back to login
-      router.push("/auth/login"); // or "/login" depending on your route
+      router.push("/auth/login");
       return;
     }
 
@@ -35,7 +38,7 @@ export default function MainPage() {
 
     async function fetchUsers() {
       try {
-        const res = await fetch(`/api/users?exclude=${currentId}`);
+        const res = await fetch(`/api/main?exclude=${currentId}`);
         const data = await res.json();
         setUsers(data.users || []);
       } catch (err) {
@@ -48,26 +51,53 @@ export default function MainPage() {
     fetchUsers();
   }, [currentId]);
 
-  const SWIPE_DISTANCE = 500;
 
-  const controlsStart = useCallback(
-    async (direction) => {
-      if (isAnimating) return;
-      setIsAnimating(true);
-      try {
-        await controls.start({
-          x: direction,
-          opacity: 0,
-          transition: { duration: 0.25 },
-        });
-        setIndex((prev) => prev + 1);
-        controls.set({ x: 0, opacity: 1 });
-      } finally {
-        setIsAnimating(false);
-      }
-    },
-    [controls, isAnimating]
-  );
+  // Start of animation
+const SWIPE_DISTANCE = 500;
+
+const controlsStart = useCallback(
+  async (direction) => {
+    // don't start if already animating
+    if (isAnimating) return;
+
+    // make sure we actually have a card here
+    if (!users.length || index >= users.length) return;
+
+    const currentCard = users[index];
+
+    // depending on your API, this might be `currentCard.id`
+    const targetUserId = currentCard.id ?? currentCard.user_id;
+    const interaction = direction > 0 ? "like" : "dislike";
+
+    setIsAnimating(true);
+
+    try {
+      // save interaction
+      fetch("/api/interactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId, interaction }),
+      }).catch((err) => {
+        console.error("Failed to save interaction:", err);
+      });
+
+      // animate swipe
+      await controls.start({
+        x: direction,
+        opacity: 0,
+        transition: { duration: 0.25 },
+      });
+
+      // move to next card
+      setIndex((prev) => prev + 1);
+      controls.set({ x: 0, opacity: 1 });
+    } finally {
+      setIsAnimating(false);
+    }
+  },
+  // include `users` and `index` so the callback sees fresh values
+  [controls, isAnimating, users, index]
+);
 
   const handleLike = () => controlsStart(+SWIPE_DISTANCE);
   const handleDislike = () => controlsStart(-SWIPE_DISTANCE);
@@ -81,21 +111,91 @@ export default function MainPage() {
       controls.start({ x: 0, rotate: 0 });
     }
   };
+  // End of animation
 
-  // 3️⃣ Proper logout: clear localStorage and go to login
+
   const handleLogout = () => {
     localStorage.removeItem("currentUserId");
-    // If you ever add an /api/logout, call it here too
-    router.push("/auth/login"); // NOTE the leading slash
+    router.push("/auth/login");
   };
 
-  // 4️⃣ Loading / empty states
+
   if (loadingUsers) {
-    return <h2 style={{ textAlign: "center" }}>Loading profiles...</h2>;
+    return (
+      <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }
 
   if (!users.length || index >= users.length) {
-    return <h2 style={{ textAlign: "center" }}>No more users around</h2>;
+    return (
+      <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }
 
   const user = users[index];

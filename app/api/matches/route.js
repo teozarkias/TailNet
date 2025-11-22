@@ -8,7 +8,7 @@ export async function GET() {
   let db;
   try {
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const currentId = Number(cookieStore.get("user_id")?.value);
 
     db = await open({

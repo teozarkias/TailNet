@@ -24,6 +24,18 @@ export async function GET(req) {
       [excludeId]
     );
 
+
+    /* 
+                      DO THIS LATER (get cards i stil havent swiped to)
+    SELECT *
+    FROM Users u
+    WHERE u.user_id != :currentUserId
+      AND u.user_id NOT IN (
+        SELECT target_user_id
+        FROM Interactions
+        WHERE user_id = :currentUserId
+      );
+  */
     return NextResponse.json({ users }, { status: 200 });
 
   } catch (err) {

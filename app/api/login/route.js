@@ -39,10 +39,13 @@ export async function POST(req) {
     }
 
     // Set cookie for server-side use
-    cookies().set("user_id", String(user.user_id), {
+    const cookieStore = await cookies();
+    cookieStore.set("user_id", String(user.user_id), {
       httpOnly: true,
       secure: false,
       path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+
     });
 
     return NextResponse.json(
