@@ -78,3 +78,90 @@
 .dislikes-box {
   border-left: 6px solid #ff4d4d; 
 }
+
+.settings {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+}
+
+.settings-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f9fafb;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.5);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.settings-button:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: rgba(15, 23, 42, 1);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+}
+
+/* Dropdown */
+
+.settings-menu {
+  margin-top: 10px;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 10px 0;
+  min-width: 180px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+  border: 1px solid #e5e7eb;
+}
+
+.settings-menu > div {
+  padding: 8px 16px;
+}
+
+.settings-menu a {
+  text-decoration: none;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.settings-menu a:hover {
+  text-decoration: underline;
+}
+
+.settings-menu hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 6px 0;
+}
+
+/* Logout */
+
+.logout-button {
+  width: 100%;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.logout-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4);
+}

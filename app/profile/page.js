@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [openSettings, setOpenSettings] = useState(false);
 
   useEffect(() => {
     const currentUserId = localStorage.getItem("currentUserId");
@@ -28,6 +29,11 @@ export default function ProfilePage() {
     })();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("currentUserId");
+    router.push("/auth/login");
+  };
+  
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading profile...</p>;
   }
@@ -38,15 +44,51 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page">
+
+      <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      
       <img
         src={profile.photo_url}
         alt="User-and-dog"
         className="profile-image"
       />
 
-      <h2>{profile.username}</h2>
+      <h2 className="profile-username">{profile.username}</h2>
 
-      <p>
+      <p className="profile-details">
         <strong>Name:</strong> {profile.fullname} <br />
         <strong>Age:</strong> {profile.age} <br />
         <strong>Sex:</strong> {profile.sex} <br /><br />

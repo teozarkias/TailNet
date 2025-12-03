@@ -7,6 +7,7 @@ export default function Interactions(){
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openSettings, setOpenSettings] = useState(false);
 
   // Fetch interactions
   useEffect(() => {
@@ -24,6 +25,12 @@ export default function Interactions(){
     })();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("currentUserId");
+    router.push("/auth/login");
+  };
+
+
   if(loading){
     return <p style={{textAlign: "center"}}>Loading...</p>
   }
@@ -37,15 +44,52 @@ export default function Interactions(){
   }
 
 
+
+
   return(
     <div className="interactions-page">
       <h2>Interactions</h2>
 
+      <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="interactions-box">
 
         {likes.map((l) => (
-          <div className="interactions-box">
-            <div className="likes-box" key={l.id}>
+          <div className="interactions-box" key={l.id}>
+            <div className="likes-box">
               <img
                 src={l.photo_url}
                 alt="Owner-Dog photo"
