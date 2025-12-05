@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
+import { cookies } from "next/headers";
 
 export async function GET(req) {
   let db;
 
   try {
     // 🔹 Read user_id from the query string: /api/profile?user_id=1
-    const { searchParams } = new URL(req.url);
-    const userId = Number(searchParams.get("user_id"));
+    const cookieStore = await cookies();
+    const userId = Number(cookieStore.get("user_id")?.value);
 
     if (!userId) {
       return NextResponse.json(

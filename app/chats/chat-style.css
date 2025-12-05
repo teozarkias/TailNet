@@ -1,0 +1,122 @@
+/* Full page wrapper for chats */
+.chats-page {
+  min-height: 100vh;
+  background-color: #10b981; /* same green */
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Poppins", "Quicksand", "Comic Sans MS", sans-serif;
+}
+
+/* Title */
+.chats-title {
+  color: #ffffff;
+  font-size: 2.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: 1px;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* White card that holds the list */
+.chats-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px 18px;
+  border-radius: 24px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+  margin-top: 18px;
+  border: 1px solid #ffffff;
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Single chat row */
+.chat-match {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: #f9fafb;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.chat-match:last-child {
+  margin-bottom: 0;
+}
+
+/* Hover effect – playful, bouncy */
+.chat-match:hover {
+  transform: translateY(-1px) scale(1.01);
+  background: #ecfeff;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.22);
+}
+
+/* Dog/photo avatar */
+.chat-photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+  animation: popIn 0.4s ease-out;
+}
+
+/* Username */
+.chat-match p {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Optional subtitle style if you add "last message" later */
+.chat-subtext {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Loading / empty state if you ever use classes instead of inline style */
+.loading-text,
+.no-chats-text {
+  color: #ffffff;
+  font-size: 1.4rem;
+  text-align: center;
+  margin-top: 50px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Animations (same energy as profile page) */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS Users (
   time_created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE Users ADD COLUMN photo_url TEXT;
+
 
 CREATE TABLE IF NOT EXISTS Matches (
   match_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,7 +32,6 @@ CREATE TABLE IF NOT EXISTS AuthUsers (
   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
-ALTER TABLE Users ADD COLUMN photo_url TEXT;
 
 SELECT username, password_hash FROM Users;
 
@@ -42,13 +43,13 @@ CREATE TABLE IF NOT EXISTS UserInteraction (
   interaction TEXT NOT NULL CHECK(interaction in('like', 'dislike')),
   time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-  FOREIGN KEY (target_user_id) REFERENCES Users(target_user_id) ON DELETE CASCADE,
+  FOREIGN KEY (target_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
   UNIQUE(user_id, target_user_id)
 );
 
 
-CREATE TABLE IF NOT EXISTS Conversations (
-  conversation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS Chats (
+  chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
   match_id INTEGER NOT NULL,
   user1_id INTEGER NOT NULL,
   user2_id INTEGER NOT NULL,
@@ -58,3 +59,14 @@ CREATE TABLE IF NOT EXISTS Conversations (
   FOREIGN KEY (user1_id) REFERENCES Users(user_id),
   FOREIGN KEY (user2_id) REFERENCES Users(user_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS Messages (
+  message_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  chat_id INTEGER NOT NULL,
+  sender_id INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (chat_id) REFERENCES Chats(chat_id) ON DELETE CASCADE,
+  FOREIGN KEY (sender_id) REFERENCES Users(user_id) ON DELETE CASCADE
+)

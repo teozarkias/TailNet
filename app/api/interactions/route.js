@@ -11,8 +11,8 @@ async function getDb() {
 }
 
 // GET /api/interactions  -> used by Interactions page
+let db;
 export async function GET() {
-  let db;
   try {
     const cookieStore = await cookies();
     const currentId = Number(cookieStore.get("user_id")?.value);
@@ -81,9 +81,7 @@ export async function GET() {
 }
 
 // POST /api/interactions  -> called from main swipe page
-// Body: { targetUserId: number, interaction: 'like' | 'dislike' }
 export async function POST(req) {
-  let db;
   try {
     const cookieStore = await cookies();
     const currentId = Number(cookieStore.get("user_id")?.value);
