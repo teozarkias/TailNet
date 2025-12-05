@@ -37,7 +37,7 @@ export default function ChatPage() {
 
       <div className="chats-card">
         {chats.map((c) => (
-          <div key={c.id} className="chat-match"> {/* FIXED */}
+          <div key={c.id} className="chat-match">
             <img
               src={c.photo_url}
               alt="Dog Owner-Dog"

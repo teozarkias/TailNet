@@ -125,21 +125,42 @@ export async function POST(req) {
         FROM UserInteraction
         WHERE user_id = ? AND target_user_id = ? AND interaction = 'like'
         `,
-        [targetUserId, currentId] // check if they liked you back
+        [targetUserId, currentId]
       );
 
       if (mutual) {
         const user1 = Math.min(currentId, targetUserId);
         const user2 = Math.max(currentId, targetUserId);
 
+      
         await db.run(
           `
-          INSERT OR IGNORE INTO Matches (user_id1, user_id2)
+          INSERT OR IGNORE INTO Matches(user_id1, user_id2)
           VALUES (?, ?)
           `,
           [user1, user2]
         );
+
+        // Need match to create chat
+        const match = await db.get(
+          `
+          SELECT match_id
+          FROM Matches
+          WHERE user_id1 = ? AND user_id2 = ?
+          `,
+          [user1, user2]
+        );
+
+        // Create chat
+        await db.run(
+          `
+          INSERT OR IGNORE INTO Chats(match_id, user1_id, user2_id)
+          VALUES (?, ?, ?)
+          `,
+          [match.match_id, user1, user2]
+        );
       }
+
     }
 
     return NextResponse.json(
