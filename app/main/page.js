@@ -222,11 +222,15 @@ const controlsStart = useCallback(
               <a href="/matches">Matches</a>
             </div>
 
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
 
-            <hr />
+            <hr/>
 
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>

@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 let db = null;
 
 async function getDb() {
+
   if (!db) {
     db = await open({
       filename: "DataBase/dogWalkApp.db",
@@ -21,7 +22,7 @@ async function getDb() {
 export async function GET() {
   try {
     const db = await getDb();
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const currentId = Number(cookieStore.get("user_id")?.value);
 
     if (!currentId) {

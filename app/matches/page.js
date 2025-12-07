@@ -1,7 +1,7 @@
 "use client";
 import "./matches-style.css";
 import { useEffect, useState, useCallback } from "react";
-import { pre } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 
 export default function MatchesPage(){
 
@@ -10,6 +10,7 @@ export default function MatchesPage(){
   const[loading, setLoading] = useState(true);
   const[matchChat, setMatchChat] = useState(null);
   const [openSettings, setOpenSettings] = useState(false);
+  const router = useRouter();
 
   // Fetch matches 
   useEffect(() => {
@@ -73,6 +74,10 @@ export default function MatchesPage(){
 
             <div className="settings-menu-toMatches">
               <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
             </div>
 
             <div className="settings-menu-toProfile">

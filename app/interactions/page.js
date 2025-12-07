@@ -1,6 +1,7 @@
 "use client";
 import "./interactions-style.css";
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Interactions(){
   
@@ -9,6 +10,7 @@ export default function Interactions(){
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
 
+  const router = useRouter();
   // Fetch interactions
   useEffect(() => {
     (async () => {
@@ -68,6 +70,10 @@ export default function Interactions(){
 
             <div className="settings-menu-toMatches">
               <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
             </div>
 
             <div className="settings-menu-toProfile">

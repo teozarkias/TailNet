@@ -18,6 +18,9 @@ async function setupDatabase() {
     await db.exec(schema);
 
     console.log("Database initialized successfully!");
+
+    
+    
     await db.close();
   } catch (err) {
     console.error("Error initializing DB:", err);
