@@ -32,20 +32,19 @@ export async function GET() {
     const chats = await db.all(
       `
      SELECT
-      ch.chat_id AS id,
+      c.chat_id AS id,
       u.user_id,
       u.username,
       u.photo_url
-    FROM Chats ch
+    FROM Chats c
     JOIN Users u
       ON u.user_id = CASE
-        WHEN ch.user1_id = ? THEN ch.user2_id
-        ELSE ch.user1_id
+        WHEN c.user1_id = ? THEN c.user2_id
+        ELSE c.user1_id
       END
-    WHERE ch.user1_id = ? OR ch.user2_id = ?
-    ORDER BY ch.chat_id DESC;
-      `,
-      [currentId, currentId, currentId]
+    WHERE c.user1_id = ? OR c.user2_id = ?
+    ORDER BY c.chat_id DESC;
+      `, [currentId, currentId, currentId]
     ); // CASE cause either user can be user1 or user2
 
     return NextResponse.json({ chats }, { status: 200 });

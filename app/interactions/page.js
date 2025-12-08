@@ -1,6 +1,6 @@
 "use client";
 import "./interactions-style.css";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Interactions(){

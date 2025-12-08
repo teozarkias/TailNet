@@ -2,19 +2,19 @@
 import { useEffect, useState } from "react";
 import "./chat-style.css";
 import { useRouter } from "next/navigation";
-export default function ChatPage() {
 
+export default function ChatPage() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
+
   useEffect(() => {
     (async () => {
       try {
         const res = await fetch("/api/chats");
         const data = await res.json();
-
         console.log("API chats: ", data);
         setChats(data.chats || []);
       } catch (error) {
@@ -25,12 +25,10 @@ export default function ChatPage() {
     })();
   }, []);
 
-
   const handleLogout = () => {
     localStorage.removeItem("currentUserId");
     router.push("/auth/login");
   };
-
 
   if (loading) {
     return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
@@ -59,21 +57,16 @@ export default function ChatPage() {
             <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
             </div>
-
             <div className="settings-menu-toMatches">
               <a href="/matches">Matches</a>
             </div>
-
             <div className="settings-menu-toChats">
               <a href="/chats">Chats</a>
             </div>
-
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
-
             <hr />
-
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
                 Logout
@@ -85,7 +78,11 @@ export default function ChatPage() {
 
       <div className="chats-card">
         {chats.map((c) => (
-          <div key={c.id} className="chat-match">
+          <div
+            key={c.id}
+            className="chat-match"
+            onClick={() => router.push(`/chats/${c.id}`)}
+          >
             <img
               src={c.photo_url}
               alt="Dog Owner-Dog"

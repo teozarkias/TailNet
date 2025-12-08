@@ -2,11 +2,23 @@ import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
+/*
+Code	   When to use it
+------  ------------------
+200    	Returning data normally.
+201     Created	After inserting something into the database.
+400     Bad Request	Missing query/body parameters or invalid data.
+401     Unauthorized	No cookie / no token — user is not logged in.
+403     Forbidden	User logged in but not part of the chat.
+404     Not Found	Chat or message does not exist.
+500     Server Error	Unexpected error — database crash, exception, etc.
+*/ 
+
+
 export async function GET(req) {
 
   let db;
   try {
-    
     const { searchParams } = new URL(req.url);
     const excludeId = searchParams.get("exclude");
 
@@ -26,7 +38,7 @@ export async function GET(req) {
 
 
     /* 
-                      DO THIS LATER (get cards i stil havent swiped to)
+       DO THIS AFTER ALL TESTING (get cards i stil havent swiped to)
     SELECT *
     FROM Users u
     WHERE u.user_id != :currentUserId
