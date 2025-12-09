@@ -54,19 +54,25 @@ export default function ChatPage() {
 
         {openSettings && (
           <div className="settings-menu">
+
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
+            </div>
+            
             <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
             </div>
+
             <div className="settings-menu-toMatches">
               <a href="/matches">Matches</a>
             </div>
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
+ 
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
+
             <hr />
+            
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
                 Logout

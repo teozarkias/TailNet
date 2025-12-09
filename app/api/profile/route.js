@@ -7,10 +7,19 @@ export async function GET(req) {
   let db;
 
   try {
-    // 🔹 Read user_id from the query string: /api/profile?user_id=1
+    // Read user_id from query
+    const { searchParams } = new URL(req.url);
+    const userIdFromQuery = searchParams.get("user_id");
+    
+    // Also read user_id from cookie (current logged-in user)
     const cookieStore = await cookies();
-    const userId = Number(cookieStore.get("user_id")?.value);
+    const userIdFromCookie = cookieStore.get("user_id")?.value;
 
+    // Pick which one to use, if query param exists → use that, otherwise back to cookie
+    const userId = userIdFromQuery
+      ? Number(userIdFromQuery)
+      : Number(userIdFromCookie);
+      
     if (!userId) {
       return NextResponse.json(
         { message: "user_id missing" },
@@ -23,10 +32,10 @@ export async function GET(req) {
       driver: sqlite3.Database,
     });
 
-    // 🔹 Get exactly one row
     const profile = await db.get(
       `
       SELECT 
+        user_id,
         username,
         fullname,
         age,

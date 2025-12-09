@@ -18,20 +18,22 @@ export async function GET() {
     
     const matches = await db.all(
       `
-      SELECT m.match_id, u.user_id, u.username, u.photo_url, u.dog_name, u.dog_breed
+      SELECT m.match_id, m.user_id2, u.user_id, u.username, u.photo_url, u.dog_name, u.dog_breed
       FROM Matches m
       JOIN Users u ON u.user_id = m.user_id2
-      WHERE m.user_id1 = ?
+      WHERE (m.user_id1 = ?)
+        AND m.user_id2 != ?
 
       UNION 
 
-      SELECT m.match_id, u.user_id AS id, u.username, u.photo_url, u.dog_name, u.dog_breed
+      SELECT m.match_id, m.user_id2, u.user_id AS id, u.username, u.photo_url, u.dog_name, u.dog_breed
       FROM Matches m
       JOIN Users u ON u.user_id = m.user_id1
-      WHERE m.user_id2 = ?
+      WHERE (m.user_id2 = ?)
+        AND m.user_id1 != ?
   
       ORDER BY user_id;
-      `, [currentId, currentId]
+      `, [currentId, currentId, currentId]
     );
 
     return NextResponse.json({ matches }, { status: 200});

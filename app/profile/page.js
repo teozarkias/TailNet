@@ -1,17 +1,17 @@
 "use client";
 import "./profile-style.css";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const currentUserId = localStorage.getItem("currentUserId");
-    const router = useRouter();
 
     if (!currentUserId) {
       console.log("No user ID found in localStorage");
@@ -60,6 +60,11 @@ export default function ProfilePage() {
 
         {openSettings && (
           <div className="settings-menu">
+
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
+            </div>
+
             <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
             </div>
@@ -70,10 +75,6 @@ export default function ProfilePage() {
 
             <div className="settings-menu-toChats">
               <a href="/chats">Chats</a>
-            </div>
-
-            <div className="settings-menu-toProfile">
-              <a href="/profile">Profile</a>
             </div>
 
             <hr />

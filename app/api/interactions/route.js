@@ -40,10 +40,11 @@ export async function GET() {
         u.photo_url
       FROM UserInteraction ui
       JOIN Users u ON u.user_id = ui.target_user_id
-      WHERE ui.user_id = ? AND ui.interaction = 'like'
+      WHERE (ui.user_id = ? AND ui.interaction = 'like')
+        AND ui.target_user_id != ?
       ORDER BY ui.time_created DESC
       `,
-      [currentId]
+      [currentId, currentId]
     );
 
     const dislikes = await db.all(
@@ -60,10 +61,11 @@ export async function GET() {
         u.photo_url
       FROM UserInteraction ui
       JOIN Users u ON u.user_id = ui.target_user_id
-      WHERE ui.user_id = ? AND ui.interaction = 'dislike'
+      WHERE (ui.user_id = ? AND ui.interaction = 'dislike')
+        AND ui.target_user_id != ?
       ORDER BY ui.time_created DESC
       `,
-      [currentId]
+      [currentId, currentId]
     );
 
     return NextResponse.json({ likes, dislikes }, { status: 200 });

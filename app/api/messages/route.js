@@ -36,7 +36,7 @@ export async function GET(req) {
   // Then it extracts the value of chatId and converts it to a Number
 
   
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const currentId = Number(cookieStore.get("user_id")?.value);
  
   if(!currentId){
@@ -53,7 +53,7 @@ export async function GET(req) {
     JOIN Users u ON u.user_id = m.sender_id
     WHERE m.chat_id = ?
     ORDER BY m.time_created ASC;
-    `[chatId]
+    `,[chatId]
   );
 
   return NextResponse.json(
@@ -68,11 +68,6 @@ export async function GET(req) {
       { message: "Server error"},
       { status: 500 }
     );
-  } finally{
-    if(db){
-      await db.close();
-      db = null;
-    }
   }
 }
 
@@ -82,7 +77,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const db = await getDB();
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const currentId = Number(cookieStore.get("user_id")?.value);
 
     if(!currentId){
@@ -138,11 +133,5 @@ export async function POST(req) {
       { message: "Server error" },
       { status: 500 }
     );
-  } finally{
-    if(db){
-      await db.close();
-      db = null;
-    }
-  }
-
+  } 
 }

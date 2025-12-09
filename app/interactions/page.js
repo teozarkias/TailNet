@@ -32,19 +32,17 @@ export default function Interactions(){
     router.push("/auth/login");
   };
 
+  const handleProfileView = (userId) => {
+    router.push(`/profile/${userId}`);
+  };
 
   if(loading){
     return <p style={{textAlign: "center"}}>Loading...</p>
   }
 
-  if(likes.length === 0){
-    return <p style={{textAlign: "center"}}>No likes yet...</p>
+  if(likes.length === 0 && dislikes.length === 0){
+    return <p style={{textAlign: "center"}}>No interactions yet...</p>
   }
-
-  if(dislikes.length === 0){
-    return <p style={{textAlign: "center"}}>No dislikes yet...</p>
-  }
-
 
 
 
@@ -64,8 +62,8 @@ export default function Interactions(){
 
         {openSettings && (
           <div className="settings-menu">
-            <div className="setting-menu-toLikedDisliked">
-              <a href="/interactions">Interactions</a>
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
             </div>
 
             <div className="settings-menu-toMatches">
@@ -95,11 +93,11 @@ export default function Interactions(){
 
         {likes.map((l) => (
           <div className="interactions-box" key={l.id}>
-            <div className="likes-box">
+            <div className="likes-box" onClick={() => handleProfileView(l.id)}>
               <img
                 src={l.photo_url}
                 alt="Owner-Dog photo"
-                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#d1ffe7"}}
+                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#d1ffe7", cursor: "pointer"}}
               />
               <h3>{l.username}</h3>
               <p>{l.dog_name}, {l.dog_breed}</p>
@@ -108,11 +106,11 @@ export default function Interactions(){
         ))}
 
         {dislikes.map((d) => (
-          <div className="dislikes-box" key={d.id}>
+          <div className="dislikes-box" key={d.id} onClick={() => handleProfileView(d.id)}>
               <img
                 src={d.photo_url}
                 alt="Owner-Dog photo"
-                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#ffd1d1"}}
+                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#ffd1d1", cursor: "pointer"}}
               />
               <h3>{d.username}</h3>
               <p>{d.dog_name}, {d.dog_breed}</p>

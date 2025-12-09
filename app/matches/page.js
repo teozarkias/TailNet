@@ -8,7 +8,6 @@ export default function MatchesPage(){
   // We use useState() to avoid errors while data is still loading.
   const[matches, setMatches] = useState([]);
   const[loading, setLoading] = useState(true);
-  const[matchChat, setMatchChat] = useState(null);
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
 
@@ -42,14 +41,10 @@ export default function MatchesPage(){
     router.push("/auth/login");
   };
 
-  const openChat = (m) => {
-    console.log(matches);
-    setMatchChat(m);
-  }
+  const handleProfileView = (userId) => {
+    router.push(`/profile/${userId}`);
+  };
 
-  const closeChat = () => {
-    setMatchChat(null);
-  }
 
 
   return (
@@ -68,12 +63,13 @@ export default function MatchesPage(){
 
         {openSettings && (
           <div className="settings-menu">
-            <div className="setting-menu-toLikedDisliked">
-              <a href="/interactions">Interactions</a>
+
+            <div className="settings-menu-toMain">
+              <a href="/main">Main</a>
             </div>
 
-            <div className="settings-menu-toMatches">
-              <a href="/matches">Matches</a>
+            <div className="settings-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
             </div>
 
             <div className="settings-menu-toChats">
@@ -97,35 +93,16 @@ export default function MatchesPage(){
 
       <div className="matches-box">
         {matches.map((m) => (
-          <div className="match-card" key={m.user_id}>
+          <div className="match-card" key={m.user_id} onClick={() => handleProfileView(m.user_id)}>
             <img
               src={m.photo_url}
               alt="Owner-Dog photo"
               style={{ width: "80px", height: "80px", borderRadius: "10px" , cursor: "pointer"}}
-              onClick={() => openChat(m)}
             />
             <h3>{m.username}</h3>
             <p>{m.dog_name}, {m.dog_breed}</p>
           </div>
         ))}
-
-
-      {matchChat &&(
-        <>
-          <div className="matches-chat">
-            <div className="matches-chat-top">
-              <h3>{matchChat.username}</h3>
-              <button className="close-btn">X</button>
-            </div>
-
-            <div className="matches-chat-conversation">
-              <input type="text" placeholder="Type something..."></input>
-              <button onClick={closeChat}>Send</button>
-            </div>
-          </div>
-        </>
-      )}
-
       </div>
     </div>
   );
