@@ -24,8 +24,19 @@ export default function ChatRoom() {
 
     if (stored) {
       setCurrentUserId(Number(stored));
+    } else{
+      router.push("/auth/login");
     }
   }, []);
+
+  // See if new messages come to auto-scroll
+  useEffect(() => {
+    const container = document.querySelector(".chat-room-messages");
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [messages]);
+
 
   // Fetch messages + polling
   useEffect(() => {
@@ -144,6 +155,14 @@ export default function ChatRoom() {
                 isMine ? "message-mine" : "message-theirs"
               }`}
             >
+              {!isMine && m.photo_url && (
+                <img
+                  src={m.photo_url}
+                  alt="Dog Owner-Dog"
+                  className="message-photo"
+                />
+              )}
+
               <div className="message-bubble">
                 <div className="message-content">{m.message}</div>
                 <div className="message-time">
@@ -157,6 +176,7 @@ export default function ChatRoom() {
           );
         })}
       </div>
+
 
       <div className="chat-room-input">
         <input

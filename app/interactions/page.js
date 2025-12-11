@@ -2,30 +2,46 @@
 import "./interactions-style.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
-export default function Interactions(){
-  
-  const [likes, setLikes] = useState([]);
-  const [dislikes, setDislikes] = useState([]);
+export default function Interactions() {
+  const [interactions, setInteractions] = useState([]); // unified list
   const [loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
 
   const router = useRouter();
-  // Fetch interactions
+
+  // Auth + fetch
   useEffect(() => {
+    const stored = localStorage.getItem("currentUserId");
+
+    if (!stored) {
+      router.push("/auth/login");
+      return;
+    }
+
     (async () => {
-        try {
-          const res = await fetch("/api/interactions");
-          const data = await res.json();
-          setLikes(data.likes || []);
-          setDislikes(data.dislikes || []);
-        } catch (error) {
-          console.log("Error fetching interactions:", error);
-        }finally{
-          setLoading(false);
-        }
+      try {
+        const res = await fetch("/api/interactions");
+        const data = await res.json();
+
+        const likes = (data.likes || []).map((u) => ({
+          ...u,
+          status: "like",
+        }));
+        const dislikes = (data.dislikes || []).map((u) => ({
+          ...u,
+          status: "dislike",
+        }));
+
+        setInteractions([...likes, ...dislikes]);
+      } catch (error) {
+        console.log("Error fetching interactions:", error);
+      } finally {
+        setLoading(false);
+      }
     })();
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("currentUserId");
@@ -36,17 +52,37 @@ export default function Interactions(){
     router.push(`/profile/${userId}`);
   };
 
-  if(loading){
-    return <p style={{textAlign: "center"}}>Loading...</p>
+  // Swipe handler: update local state + API
+  const handleSwipe = async (userId, newStatus) => {
+    setInteractions((prev) =>
+      prev.map((u) =>
+        u.id === userId ? { ...u, status: newStatus } : u
+      )
+    );
+
+    try {
+      await fetch("/api/interactions", {
+        method: "POST", // or PUT if your API expects it
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetUserId: userId,
+          interaction: newStatus, // "like" | "dislike"
+        }),
+      });
+    } catch (err) {
+      console.error("Error updating interaction:", err);
+    }
+  };
+
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
 
-  if(likes.length === 0 && dislikes.length === 0){
-    return <p style={{textAlign: "center"}}>No interactions yet...</p>
+  if (!interactions.length) {
+    return <p style={{ textAlign: "center" }}>No interactions yet...</p>;
   }
 
-
-
-  return(
+  return (
     <div className="interactions-page">
       <h2>Interactions</h2>
 
@@ -90,33 +126,46 @@ export default function Interactions(){
       </div>
 
       <div className="interactions-box">
+        {interactions.map((u) => {
+          const isLike = u.status === "like";
 
-        {likes.map((l) => (
-          <div className="interactions-box" key={l.id}>
-            <div className="likes-box" onClick={() => handleProfileView(l.id)}>
+          return (
+            <motion.div
+              key={u.id}
+              className={isLike ? "likes-box" : "dislikes-box"}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragSnapToOrigin
+              onDragEnd={(_, info) => {
+                if (info.offset.x > 80) {
+                  // swipe right -> like
+                  handleSwipe(u.id, "like");
+                } else if (info.offset.x < -80) {
+                  // swipe left -> dislike
+                  handleSwipe(u.id, "dislike");
+                }
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
               <img
-                src={l.photo_url}
+                src={u.photo_url}
                 alt="Owner-Dog photo"
-                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#d1ffe7", cursor: "pointer"}}
+                className="interaction-photo"
+                onClick={() => handleProfileView(u.id)}
               />
-              <h3>{l.username}</h3>
-              <p>{l.dog_name}, {l.dog_breed}</p>
-            </div>
-          </div>
-        ))}
-
-        {dislikes.map((d) => (
-          <div className="dislikes-box" key={d.id} onClick={() => handleProfileView(d.id)}>
-              <img
-                src={d.photo_url}
-                alt="Owner-Dog photo"
-                style={{width: "80px", height: "80px", borderRadius: "10px", color: "#ffd1d1", cursor: "pointer"}}
-              />
-              <h3>{d.username}</h3>
-              <p>{d.dog_name}, {d.dog_breed}</p>
-          </div>
-        ))}
+              <div
+                className="interaction-text"
+                onClick={() => handleProfileView(u.id)}
+              >
+                <h3>{u.username}</h3>
+                <p>
+                  {u.dog_name}, {u.dog_breed}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
-  )
-} 
+  );
+}

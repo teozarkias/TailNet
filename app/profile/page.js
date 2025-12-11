@@ -10,13 +10,27 @@ export default function ProfilePage() {
   const [openSettings, setOpenSettings] = useState(false);
   const router = useRouter();
 
+  // Prevents scrolling (couldnt through css for some reason)
+  useEffect(() => {
+    const html = document.documentElement;
+
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
+  
   useEffect(() => {
     const currentUserId = localStorage.getItem("currentUserId");
 
     if (!currentUserId) {
-      console.log("No user ID found in localStorage");
-      setLoading(false);
-      return;
+      router.push("/auth/login");
     }
 
     (async () => {

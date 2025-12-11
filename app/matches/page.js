@@ -13,6 +13,12 @@ export default function MatchesPage(){
 
   // Fetch matches 
   useEffect(() => {
+    const stored = localStorage.getItem("currentUserId");
+
+    if(!stored){
+      router.push("/auth/login");
+    }
+
     (async () => {
       try {
         const res = await fetch("/api/matches");

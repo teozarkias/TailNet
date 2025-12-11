@@ -12,10 +12,27 @@ export default function OtherProfilePage() {
   const { profileId } = useParams();
   console.log("Dynamic profileId from URL:", profileId);
 
+  // Prevents scrolling (couldnt through css for some reason)
   useEffect(() => {
-    if (!profileId) {
-      setLoading(false);
-      return;
+    const html = document.documentElement;
+
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
+  
+  useEffect(() => {
+    const stored = localStorage.getItem("currentUserId");
+
+    if(!stored){
+      router.push("/auth/login");
     }
 
     (async () => {

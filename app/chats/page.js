@@ -11,6 +11,12 @@ export default function ChatPage() {
   const router = useRouter();
 
   useEffect(() => {
+    const stored = localStorage.getItem("currentUserId");
+
+    if(!stored){
+      router.push("/auth/login");
+    }
+
     (async () => {
       try {
         const res = await fetch("/api/chats");

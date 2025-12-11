@@ -48,7 +48,7 @@ export async function GET(req) {
 
   const messages = await db.all(
     `
-    SELECT m.message_id, m.chat_id, m.sender_id, m.message, m.time_created
+    SELECT m.message_id, u.photo_url, m.chat_id, m.sender_id, m.message, m.time_created
     FROM Messages m 
     JOIN Users u ON u.user_id = m.sender_id
     WHERE m.chat_id = ?
@@ -105,7 +105,7 @@ export async function POST(req) {
     
     const newMessage = await db.get(
       `
-      SELECT m.message_id, m.chat_id, m.sender_id, m.message, m.time_created
+      SELECT m.message_id, m.chat_id, u.photo_url, m.sender_id, m.message, m.time_created
       FROM Messages m
       JOIN Users u ON u.user_id = m.sender_id
       WHERE m.message_id = ?

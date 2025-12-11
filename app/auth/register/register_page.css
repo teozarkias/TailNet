@@ -1,6 +1,7 @@
 .register-page{
   display: flex;
   justify-content: center;
+  overflow: hidden;
   align-items: center;
   min-height: 100vh;
   background-color: #10B981; /* emerald green */

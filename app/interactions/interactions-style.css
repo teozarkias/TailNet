@@ -2,6 +2,7 @@
   min-height: 100vh;
   background-color: #10b981;
   padding: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -164,4 +165,29 @@
   background: #dc2626;
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4);
+}
+
+/* Reuse existing styles; just wire new class names */
+
+.interaction-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.interaction-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Draggable cursor feedback */
+.likes-box,
+.dislikes-box {
+  cursor: grab;
+}
+
+.likes-box:active,
+.dislikes-box:active {
+  cursor: grabbing;
 }

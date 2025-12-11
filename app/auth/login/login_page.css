@@ -1,6 +1,7 @@
 .login-page{
   display: flex;
   justify-content: center;
+  overflow: hidden;
   align-items: center;
   min-height: 100vh;
   background-color: #10b981;
@@ -36,7 +37,8 @@
   font-size: 0.9rem;
 }
 
-.login-box button{
+/* Only style the submit button, not the eye button */
+.login-box .submit-btn{
   width: 100%;
   background-color: #10b981;
   color: white;
@@ -46,7 +48,7 @@
   margin-bottom: 1rem;
 }
 
-.login-box button:hover{
+.login-box .submit-btn:hover{
   background-color: rgb(49, 222, 133);
   cursor: pointer;
 }
@@ -57,4 +59,29 @@
 
 .login-box a:hover{
   text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* space so text doesn't run under eye icon */
+  margin-bottom: 1rem;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 35%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  width: auto;
+  height: auto;
 }

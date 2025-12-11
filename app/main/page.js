@@ -21,15 +21,32 @@ export default function MainPage() {
   // Route Helper
   const router = useRouter();
 
+  // Prevents scrolling (couldnt through css for some reason)
   useEffect(() => {
-    const id = localStorage.getItem("currentUserId");
+    const html = document.documentElement;
 
-    if (!id) {
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
+
+
+
+  useEffect(() => {
+    const stored = localStorage.getItem("currentUserId");
+
+    if(!stored){
       router.push("/auth/login");
-      return;
     }
 
-    setCurrentId(id);
+    setCurrentId(Number(stored));
   }, [router]);
 
   // Fetch users once we know currentId
@@ -53,9 +70,9 @@ export default function MainPage() {
 
 
   // Start of animation
-const SWIPE_DISTANCE = 500;
+  const SWIPE_DISTANCE = 500;
 
-const controlsStart = useCallback(
+  const controlsStart = useCallback(
   async (direction) => {
     // don't start if already animating
     if (isAnimating) return;
