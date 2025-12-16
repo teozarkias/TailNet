@@ -5,14 +5,16 @@ import { motion, useMotionValue, useAnimation } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export default function MainPage() {
-
   // Users
   const [users, setUsers] = useState([]);
   const [index, setIndex] = useState(0);
   const [currentId, setCurrentId] = useState(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
-  // Animation 
+  // Location
+  const [coords, setCoords] = useState(null); // { lat, lng }
+
+  // Animation
   const [isAnimating, setIsAnimating] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const x = useMotionValue(0);
@@ -21,7 +23,7 @@ export default function MainPage() {
   // Route Helper
   const router = useRouter();
 
-  // Prevents scrolling (couldnt through css for some reason)
+  // Prevent scrolling (couldnt through css for some reason)
   useEffect(() => {
     const html = document.documentElement;
 
@@ -37,84 +39,129 @@ export default function MainPage() {
     };
   }, []);
 
-
-
+  // Load current user id
   useEffect(() => {
     const stored = localStorage.getItem("currentUserId");
 
-    if(!stored){
+    if (!stored) {
       router.push("/auth/login");
+      return;
     }
 
     setCurrentId(Number(stored));
   }, [router]);
 
-  // Fetch users once we know currentId
+  // Get location once we know currentId, then save to DB
   useEffect(() => {
     if (!currentId) return;
 
-    async function fetchUsers() {
+    if (!("geolocation" in navigator)) {
+      console.warn("Geolocation not supported in this browser.");
+      setLoadingUsers(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        setCoords({ lat, lng });
+
+        // Save my location to DB
+        try {
+          await fetch("/api/location", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: currentId, lat, lng }),
+          });
+        } catch (err) {
+          console.error("Error saving location:", err);
+        }
+      },
+      (err) => {
+        console.error("Geolocation error:", {
+          code: err.code,
+          message: err.message,
+        });
+        setLoadingUsers(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 15000,
+      }
+    );
+  }, [currentId]);
+
+  // Fetch nearby users once we have coords
+  useEffect(() => {
+    if (!currentId || !coords) return;
+
+    async function fetchNearby() {
+      setLoadingUsers(true);
       try {
-        const res = await fetch(`/api/main?exclude=${currentId}`);
+        const res = await fetch(
+          `/api/nearby?exclude=${currentId}&lat=${coords.lat}&lng=${coords.lng}`
+        );
         const data = await res.json();
         setUsers(data.users || []);
+        setIndex(0);
       } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error("Error fetching nearby users:", err);
       } finally {
         setLoadingUsers(false);
       }
     }
 
-    fetchUsers();
-  }, [currentId]);
-
+    fetchNearby();
+  }, [currentId, coords]);
 
   // Start of animation
   const SWIPE_DISTANCE = 500;
 
   const controlsStart = useCallback(
-  async (direction) => {
-    // don't start if already animating
-    if (isAnimating) return;
+    async (direction) => {
+      // don't start if already animating
+      if (isAnimating) return;
 
-    // make sure we actually have a card here
-    if (!users.length || index >= users.length) return;
+      // make sure we actually have a card here
+      if (!users.length || index >= users.length) return;
 
-    const currentCard = users[index];
+      const currentCard = users[index];
 
-    // depending on your API, this might be `currentCard.id`
-    const targetUserId = currentCard.id ?? currentCard.user_id;
-    const interaction = direction > 0 ? "like" : "dislike";
+      // depending on your API, this might be `currentCard.id`
+      const targetUserId = currentCard.id ?? currentCard.user_id;
+      const interaction = direction > 0 ? "like" : "dislike";
 
-    setIsAnimating(true);
+      setIsAnimating(true);
 
-    try {
-      // save interaction
-      fetch("/api/interactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId, interaction }),
-      }).catch((err) => {
-        console.error("Failed to save interaction:", err);
-      });
+      try {
+        // save interaction
+        fetch("/api/interactions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ targetUserId, interaction }),
+        }).catch((err) => {
+          console.error("Failed to save interaction:", err);
+        });
 
-      // animate swipe
-      await controls.start({
-        x: direction,
-        opacity: 0,
-        transition: { duration: 0.25 },
-      });
+        // animate swipe
+        await controls.start({
+          x: direction,
+          opacity: 0,
+          transition: { duration: 0.25 },
+        });
 
-      // move to next card
-      setIndex((prev) => prev + 1);
-      controls.set({ x: 0, opacity: 1 });
-    } finally {
-      setIsAnimating(false);
-    }
-  },
-  // include `users` and `index` so the callback sees fresh values
-  [controls, isAnimating, users, index]
-);
+        // move to next card
+        setIndex((prev) => prev + 1);
+        controls.set({ x: 0, opacity: 1 });
+      } finally {
+        setIsAnimating(false);
+      }
+    },
+    [controls, isAnimating, users, index]
+  );
 
   const handleLike = () => controlsStart(+SWIPE_DISTANCE);
   const handleDislike = () => controlsStart(-SWIPE_DISTANCE);
@@ -130,12 +177,10 @@ export default function MainPage() {
   };
   // End of animation
 
-
   const handleLogout = () => {
     localStorage.removeItem("currentUserId");
     router.push("/auth/login");
   };
-
 
   if (loadingUsers) {
     return (
@@ -159,6 +204,10 @@ export default function MainPage() {
               <a href="/matches">Matches</a>
             </div>
 
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
@@ -173,7 +222,7 @@ export default function MainPage() {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   if (!users.length || index >= users.length) {
@@ -198,6 +247,10 @@ export default function MainPage() {
               <a href="/matches">Matches</a>
             </div>
 
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
@@ -212,7 +265,7 @@ export default function MainPage() {
           </div>
         )}
       </div>
-    )
+    );
   }
 
   const user = users[index];
@@ -247,7 +300,7 @@ export default function MainPage() {
               <a href="/profile">Profile</a>
             </div>
 
-            <hr/>
+            <hr />
 
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
@@ -269,11 +322,7 @@ export default function MainPage() {
       >
         <h2>{user.username}</h2>
         <hr />
-        <img
-          src={user.photo_url}
-          alt="User n Dog Pic"
-          className="card-photo"
-        />
+        <img src={user.photo_url} alt="User n Dog Pic" className="card-photo" />
         <hr />
 
         <h2>{user.dog_name}</h2>
@@ -283,18 +332,10 @@ export default function MainPage() {
         </p>
 
         <div className="buttons-box">
-          <button
-            className="dislike"
-            onClick={handleDislike}
-            disabled={isAnimating}
-          >
+          <button className="dislike" onClick={handleDislike} disabled={isAnimating}>
             ✖️
           </button>
-          <button
-            className="like"
-            onClick={handleLike}
-            disabled={isAnimating}
-          >
+          <button className="like" onClick={handleLike} disabled={isAnimating}>
             ❤️
           </button>
         </div>
