@@ -46,8 +46,9 @@ export default function ProfilePage() {
     })();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
   
@@ -87,6 +88,10 @@ export default function ProfilePage() {
               <a href="/matches">Matches</a>
             </div>
 
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
             <div className="settings-menu-toChats">
               <a href="/chats">Chats</a>
             </div>

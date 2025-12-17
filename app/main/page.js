@@ -177,8 +177,8 @@ export default function MainPage() {
   };
   // End of animation
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
@@ -196,6 +196,7 @@ export default function MainPage() {
 
         {openSettings && (
           <div className="settings-menu">
+
             <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
             </div>
@@ -208,6 +209,10 @@ export default function MainPage() {
               <a href="/chats">Chats</a>
             </div>
 
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>

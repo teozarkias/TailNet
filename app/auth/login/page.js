@@ -30,7 +30,6 @@ export default function LoginPage() {
 
       if (req.ok) {
         localStorage.setItem("currentUserId", data.user.id);
-        alert("Login successful!");
         window.location.href = "/main";
       } else {
         setMessage(`${data.message}`);

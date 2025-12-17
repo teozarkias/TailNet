@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { cookies } from "next/headers";
 
 function haversineMeters(lat1, lon1, lat2, lon2) {
   const R = 6371000; // meters
@@ -21,7 +22,9 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const excludeId = Number(searchParams.get("exclude")); // your current user id
+    const cookieStore =  await cookies();
+    const excludeId = Number(cookieStore.get("user_id")?.value);
+    
     const lat = Number(searchParams.get("lat"));
     const lng = Number(searchParams.get("lng"));
 

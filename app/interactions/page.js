@@ -43,8 +43,9 @@ export default function Interactions() {
     })();
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
@@ -110,6 +111,10 @@ export default function Interactions() {
               <a href="/chats">Chats</a>
             </div>
 
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>

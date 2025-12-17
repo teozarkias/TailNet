@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 export default function MatchesPage(){
 
-  // We use useState() to avoid errors while data is still loading.
   const[matches, setMatches] = useState([]);
   const[loading, setLoading] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
@@ -28,8 +27,6 @@ export default function MatchesPage(){
         console.log("Error fetching matches: ", error);
       }finally{
         setLoading(false); 
-        // Finally will always run, no matter if there is an API problem or not.
-        // It will stop showing "Loading..." on screen.
       }
     })();
   }, []);
@@ -47,8 +44,8 @@ export default function MatchesPage(){
     router.push("/auth/login");
   };
 
-  const handleProfileView = (userId) => {
-    router.push(`/profile/${userId}`);
+  const handleCreateMeetingFlow = (userId) => {
+    router.push(`/meetings/create/${userId}`);
   };
 
 
@@ -82,6 +79,10 @@ export default function MatchesPage(){
               <a href="/chats">Chats</a>
             </div>
 
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
@@ -99,7 +100,7 @@ export default function MatchesPage(){
 
       <div className="matches-box">
         {matches.map((m) => (
-          <div className="match-card" key={m.user_id} onClick={() => handleProfileView(m.user_id)}>
+          <div className="match-card" key={m.user_id} onClick={() => handleCreateMeetingFlow(m.user_id)}>
             <img
               src={m.photo_url}
               alt="Owner-Dog photo"

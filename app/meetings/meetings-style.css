@@ -1,0 +1,192 @@
+.meetings-page {
+  min-height: 100vh;
+  background-color: #10b981;
+  padding: 20px;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meetings-page h2 {
+  color: white;
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.meetings-box {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.meeting-card {
+  background: white;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  border: 1px solid white;
+}
+
+.meeting-card img {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.meeting-info {
+  flex: 1;
+}
+
+.meeting-info h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.meeting-info p {
+  margin: 6px 0 0 0;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-accept {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-reject {
+  background: #ef4444;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.small-note {
+  color: #ffffff;
+  opacity: 0.9;
+  max-width: 520px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.settings {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+}
+
+.settings-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f9fafb;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.5);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.settings-button:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: rgba(15, 23, 42, 1);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+}
+
+/* Dropdown */
+
+.settings-menu {
+  margin-top: 10px;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 10px 0;
+  min-width: 180px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+  border: 1px solid #e5e7eb;
+}
+
+.settings-menu > div {
+  padding: 8px 16px;
+}
+
+.settings-menu a {
+  text-decoration: none;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.settings-menu a:hover {
+  text-decoration: underline;
+}
+
+.settings-menu hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 6px 0;
+}
+
+/* Logout */
+
+.logout-button {
+  width: 100%;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.logout-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4);
+}

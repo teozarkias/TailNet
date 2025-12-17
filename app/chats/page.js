@@ -31,8 +31,9 @@ export default function ChatPage() {
     })();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
@@ -72,7 +73,11 @@ export default function ChatPage() {
             <div className="settings-menu-toMatches">
               <a href="/matches">Matches</a>
             </div>
- 
+
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>

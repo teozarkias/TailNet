@@ -49,8 +49,9 @@ export default function OtherProfilePage() {
     })();
   }, [profileId]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
@@ -89,6 +90,10 @@ export default function OtherProfilePage() {
               <a href="/chats">Chats</a>
             </div>
 
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>

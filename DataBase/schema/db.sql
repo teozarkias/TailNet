@@ -72,3 +72,15 @@ CREATE TABLE IF NOT EXISTS Messages (
   FOREIGN KEY (chat_id) REFERENCES Chats(chat_id) ON DELETE CASCADE,
   FOREIGN KEY (sender_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS Meetings (
+  meeting_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  creator_id INTEGER NOT NULL,
+  invited_id INTEGER NOT NULL,
+  meeting_time TEXT NOT NULL,
+  place TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','accepted','rejected')),
+  time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (creator_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (invited_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);

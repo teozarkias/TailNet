@@ -83,7 +83,6 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Registration successful!");
         window.location.href = "/auth/login";
       } else {
         alert(data.message || "Registration failed");
