@@ -31,30 +31,13 @@ export default function MatchesPage(){
     })();
   }, []);
 
-  if(loading){
-    return <p style={{textAlign: "center"}}>Loading...</p>
-  }
-
-  if(matches.length === 0){
-    return <p style={{textAlign: "center"}}>No matches yet...</p>
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
-  const handleCreateMeetingFlow = (userId) => {
-    router.push(`/meetings/create/${userId}`);
-  };
-
-
-
-  return (
-    <div className="matches-page">
-      <h2>Matches</h2>
-
-       <div className="settings">
+  const Settings = (
+    <div className="settings">
         <button
           className="settings-button"
           aria-label="Open settings"
@@ -67,28 +50,32 @@ export default function MatchesPage(){
         {openSettings && (
           <div className="settings-menu">
 
-            <div className="settings-menu-toMain">
+            <div className="setting-menu-toMain">
               <a href="/main">Main</a>
             </div>
-
-            <div className="settings-menu-toLikedDisliked">
+            
+            <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
             </div>
 
             <div className="settings-menu-toChats">
               <a href="/chats">Chats</a>
             </div>
-
+            
             <div className="settings-menu-toMeetings">
               <a href="/meetings">Meetings</a>
             </div>
-
+            
             <div className="settings-menu-toProfile">
               <a href="/profile">Profile</a>
             </div>
 
             <hr />
-
+            
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
                 Logout
@@ -97,7 +84,38 @@ export default function MatchesPage(){
           </div>
         )}
       </div>
+  )
 
+  if(loading){
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
+  }
+
+  if(matches.length === 0){
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Matches will appear here. Whenever there is a mutual like with another user, a match will be created.</h2>;
+    </>
+    )
+  }
+
+
+  const handleCreateMeetingFlow = (userId) => {
+    router.push(`/meetings/create/${userId}`);
+  };
+
+
+
+  return (
+    <div className="matches-page">
+      <h2>Matches</h2>
+
+      {Settings}
       <div className="matches-box">
         {matches.map((m) => (
           <div className="match-card" key={m.user_id} onClick={() => handleCreateMeetingFlow(m.user_id)}>

@@ -80,7 +80,9 @@ export async function GET() {
       { status: 500 }
     );
   } finally {
-    if (db) await db.close();
+    if (db){
+      await db.close();
+    }
   }
 }
 
@@ -143,6 +145,8 @@ export async function POST(req) {
       { status: 500 }
     );
   } finally {
-    if (db) await db.close();
+    if (db){
+      await db.close();
+    }
   }
 }

@@ -33,14 +33,23 @@ export async function PATCH(req, { params }) {
   try {
     const cookieStore = await cookies();
     const me = Number(cookieStore.get("user_id")?.value);
-    if (!me) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+    if (!me) return NextResponse.json(
+      { message: "Not authenticated" }, 
+      { status: 401 }
+    );
 
     const meetingId = Number(params.id);
-    if (!meetingId) return NextResponse.json({ message: "Invalid meeting id" }, { status: 400 });
+    if (!meetingId) return NextResponse.json(
+      { message: "Invalid meeting id" }, 
+      { status: 400 }
+    );
 
     const { status } = await req.json();
     if (![["accepted"], ["rejected"], ["pending"]].flat().includes(status)) {
-      return NextResponse.json({ message: "Invalid status" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid status" }, 
+        { status: 400 }
+      );
     }
 
     db = await getDb();
@@ -51,12 +60,18 @@ export async function PATCH(req, { params }) {
     );
 
     if (!meeting) {
-      return NextResponse.json({ message: "Meeting not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Meeting not found" }, 
+        { status: 404 }
+      );
     }
 
     // Only the invited user can accept/reject.
     if (meeting.invited_id !== me) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+      return NextResponse.json(
+        { message: "Forbidden" }, 
+        { status: 403 }
+      );
     }
 
     await db.run(
@@ -69,11 +84,19 @@ export async function PATCH(req, { params }) {
       [meetingId]
     );
 
-    return NextResponse.json({ meeting: updated }, { status: 200 });
+    return NextResponse.json(
+      { meeting: updated }, 
+      { status: 200 }
+    );
   } catch (error) {
     console.log("Error in /api/meetings/[id] PATCH", error);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server error" }, 
+      { status: 500 }
+    );
   } finally {
-    if (db) await db.close();
+    if (db){
+      await db.close();
+    }
   }
 }

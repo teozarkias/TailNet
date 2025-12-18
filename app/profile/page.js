@@ -46,24 +46,13 @@ export default function ProfilePage() {
     })();
   }, []);
 
-
   const handleLogout = async () => {
     await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
-  
-  if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading profile...</p>;
-  }
 
-  if (!profile) {
-    return <p style={{ textAlign: "center" }}>No profile found...</p>;
-  }
-
-  return (
-    <div className="profile-page">
-
-      <div className="settings">
+  const Settings = (
+    <div className="settings">
         <button
           className="settings-button"
           aria-label="Open settings"
@@ -79,7 +68,7 @@ export default function ProfilePage() {
             <div className="setting-menu-toMain">
               <a href="/main">Main</a>
             </div>
-
+            
             <div className="setting-menu-toLikedDisliked">
               <a href="/interactions">Interactions</a>
             </div>
@@ -88,16 +77,20 @@ export default function ProfilePage() {
               <a href="/matches">Matches</a>
             </div>
 
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+            
             <div className="settings-menu-toMeetings">
               <a href="/meetings">Meetings</a>
             </div>
             
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
             </div>
 
             <hr />
-
+            
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
                 Logout
@@ -106,7 +99,32 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-      
+  )
+
+  
+  if (loading) {
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
+  }
+
+  // This isnt really possible
+  if (!profile) {
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Profile not found</h2>;
+    </>
+    )  
+  }
+
+  return (
+    <div className="profile-page">
+
+      {Settings}    
       <img
         src={profile.photo_url}
         alt="User-and-dog"

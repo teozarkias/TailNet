@@ -93,14 +93,8 @@ export default function ChatRoom() {
     router.push("/auth/login");
   };
 
-  if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading....</h2>;
-  }
-
-  return (
-    <div className="chat-room">
-
-      <div className="settings">
+  const Settings = (
+    <div className="settings">
         <button
           className="settings-button"
           aria-label="Open settings"
@@ -125,10 +119,6 @@ export default function ChatRoom() {
               <a href="/matches">Matches</a>
             </div>
 
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
-            
             <div className="settings-menu-toMeetings">
               <a href="/meetings">Meetings</a>
             </div>
@@ -138,7 +128,7 @@ export default function ChatRoom() {
             </div>
 
             <hr />
-
+            
             <div className="setting-menu-Logout">
               <button className="logout-button" onClick={handleLogout}>
                 Logout
@@ -147,7 +137,17 @@ export default function ChatRoom() {
           </div>
         )}
       </div>
+  )
 
+
+  if (loading) {
+    return <h2 style={{ textAlign: "center" }}>Loading....</h2>;
+  }
+
+  return (
+    <div className="chat-room">
+
+      {Settings}
       <div className="chat-room-messages">
         {messages.map((m) => {
           const isMine =

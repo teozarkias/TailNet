@@ -31,25 +31,13 @@ export default function ChatPage() {
     })();
   }, []);
 
-
   const handleLogout = async () => {
     await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
-  if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
-  }
-
-  if (chats.length === 0) {
-    return <h2 style={{ textAlign: "center" }}>No Chats....</h2>;
-  }
-
-  return (
-    <div className="chats-page">
-      <h1 className="chats-title">Chats</h1>
-
-      <div className="settings">
+  const Settings = (
+    <div className="settings">
         <button
           className="settings-button"
           aria-label="Open settings"
@@ -92,7 +80,32 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+  )
 
+
+  if (loading) {  
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
+  }
+
+  if (chats.length === 0) {
+    return (
+      <>
+      {Settings}
+      <h2 style={{ textAlign: "center" }}>Chats will appear here. Match with a user to start talking!</h2>;
+      </>
+    )  
+  }
+
+  return (
+    <div className="chats-page">
+      <h1 className="chats-title">Chats</h1>
+
+      {Settings}
       <div className="chats-card">
         {chats.map((c) => (
           <div

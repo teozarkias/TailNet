@@ -49,8 +49,8 @@ export default function CreateMeetingPage({ params }) {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 

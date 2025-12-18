@@ -43,11 +43,61 @@ export default function Interactions() {
     })();
   }, [router]);
 
-
   const handleLogout = async () => {
     await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
+
+  const Settings = (
+    <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
+            </div>
+            
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+            
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+            
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+  )
+
 
   const handleProfileView = (userId) => {
     router.push(`/profile/${userId}`);
@@ -76,60 +126,28 @@ export default function Interactions() {
   };
 
   if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading...</p>;
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
   }
 
   if (!interactions.length) {
-    return <p style={{ textAlign: "center" }}>No interactions yet...</p>;
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Likes and dislikes will appear here. Interact with users to save them here. Swipe left or right if you change your mind!</h2>;
+    </>
+    )
   }
 
   return (
     <div className="interactions-page">
       <h2>Interactions</h2>
 
-      <div className="settings">
-        <button
-          className="settings-button"
-          aria-label="Open settings"
-          aria-expanded={openSettings}
-          onClick={() => setOpenSettings((prev) => !prev)}
-        >
-          🐾
-        </button>
-
-        {openSettings && (
-          <div className="settings-menu">
-            <div className="setting-menu-toMain">
-              <a href="/main">Main</a>
-            </div>
-
-            <div className="settings-menu-toMatches">
-              <a href="/matches">Matches</a>
-            </div>
-
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
-
-            <div className="settings-menu-toMeetings">
-              <a href="/meetings">Meetings</a>
-            </div>
-            
-            <div className="settings-menu-toProfile">
-              <a href="/profile">Profile</a>
-            </div>
-
-            <hr />
-
-            <div className="setting-menu-Logout">
-              <button className="logout-button" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
+      {Settings}
       <div className="interactions-box">
         {interactions.map((u) => {
           const isLike = u.status === "like";

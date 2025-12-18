@@ -54,8 +54,8 @@ export default function MeetingsPage() {
     return meetings.filter((m) => Number(m.creator_id) === me);
   }, [meetings, me]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUserId");
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     router.push("/auth/login");
   };
 
@@ -85,55 +85,70 @@ export default function MeetingsPage() {
     }
   };
 
-  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
+  const Settings = (
+    <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
+            </div>
+            
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+            
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+            
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+  )
+
+  if (loading){
+    return (
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
+  }
 
   return (
     <div className="meetings-page">
       <h2>Meetings</h2>
 
-      <div className="settings">
-          <button
-            className="settings-button"
-            aria-label="Open settings"
-            aria-expanded={openSettings}
-            onClick={() => setOpenSettings((prev) => !prev)}
-          >
-            🐾
-          </button>
-
-          {openSettings && (
-            <div className="settings-menu">
-
-              <div className="settings-menu-toMain">
-                <a href="/main">Main</a>
-              </div>
-
-              <div className="settings-menu-toLikedDisliked">
-                <a href="/interactions">Interactions</a>
-              </div>
-
-              <div className="settings-menu-toMatches">
-                <a href="/matches">Matches</a>
-              </div>
-
-              <div className="settings-menu-toChats">
-                <a href="/chats">Chats</a>
-              </div>
-
-              <div className="settings-menu-toProfile">
-                <a href="/profile">Profile</a>
-              </div>
-
-              <hr />
-
-              <div className="setting-menu-Logout">
-                <button className="logout-button" onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+      {Settings}
       <p className="small-note">
         When someone schedules a meeting with you, it appears here as <b>pending</b>.
       </p>

@@ -117,6 +117,61 @@ export default function MainPage() {
     fetchNearby();
   }, [currentId, coords]);
 
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/auth/login");
+  };
+
+  const Settings = (
+    <div className="settings">
+        <button
+          className="settings-button"
+          aria-label="Open settings"
+          aria-expanded={openSettings}
+          onClick={() => setOpenSettings((prev) => !prev)}
+        >
+          🐾
+        </button>
+
+        {openSettings && (
+          <div className="settings-menu">
+
+            <div className="setting-menu-toMain">
+              <a href="/main">Main</a>
+            </div>
+            
+            <div className="setting-menu-toLikedDisliked">
+              <a href="/interactions">Interactions</a>
+            </div>
+
+            <div className="settings-menu-toMatches">
+              <a href="/matches">Matches</a>
+            </div>
+
+            <div className="settings-menu-toChats">
+              <a href="/chats">Chats</a>
+            </div>
+            
+            <div className="settings-menu-toMeetings">
+              <a href="/meetings">Meetings</a>
+            </div>
+            
+            <div className="settings-menu-toProfile">
+              <a href="/profile">Profile</a>
+            </div>
+
+            <hr />
+            
+            <div className="setting-menu-Logout">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+  )
+  
   // Start of animation
   const SWIPE_DISTANCE = 500;
 
@@ -177,145 +232,31 @@ export default function MainPage() {
   };
   // End of animation
 
-  const handleLogout = async () => {
-    await fetch("/api/logout", { method: "POST" });
-    router.push("/auth/login");
-  };
 
   if (loadingUsers) {
     return (
-      <div className="settings">
-        <button
-          className="settings-button"
-          aria-label="Open settings"
-          aria-expanded={openSettings}
-          onClick={() => setOpenSettings((prev) => !prev)}
-        >
-          🐾
-        </button>
-
-        {openSettings && (
-          <div className="settings-menu">
-
-            <div className="setting-menu-toLikedDisliked">
-              <a href="/interactions">Interactions</a>
-            </div>
-
-            <div className="settings-menu-toMatches">
-              <a href="/matches">Matches</a>
-            </div>
-
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
-
-            <div className="settings-menu-toMeetings">
-              <a href="/meetings">Meetings</a>
-            </div>
-            
-            <div className="settings-menu-toProfile">
-              <a href="/profile">Profile</a>
-            </div>
-
-            <hr />
-
-            <div className="setting-menu-Logout">
-              <button className="logout-button" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    </>
+    )
   }
 
   if (!users.length || index >= users.length) {
     return (
-      <div className="settings">
-        <button
-          className="settings-button"
-          aria-label="Open settings"
-          aria-expanded={openSettings}
-          onClick={() => setOpenSettings((prev) => !prev)}
-        >
-          🐾
-        </button>
-
-        {openSettings && (
-          <div className="settings-menu">
-            <div className="setting-menu-toLikedDisliked">
-              <a href="/interactions">Interactions</a>
-            </div>
-
-            <div className="settings-menu-toMatches">
-              <a href="/matches">Matches</a>
-            </div>
-
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
-
-            <div className="settings-menu-toProfile">
-              <a href="/profile">Profile</a>
-            </div>
-
-            <hr />
-
-            <div className="setting-menu-Logout">
-              <button className="logout-button" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    <>
+    {Settings}
+    <h2 style={{ textAlign: "center" }}>No more users around. Check again soon or refresh the page!</h2>;
+    </>
+    )
   }
 
   const user = users[index];
 
   return (
     <div className="main-page">
-      <div className="settings">
-        <button
-          className="settings-button"
-          aria-label="Open settings"
-          aria-expanded={openSettings}
-          onClick={() => setOpenSettings((prev) => !prev)}
-        >
-          🐾
-        </button>
-
-        {openSettings && (
-          <div className="settings-menu">
-            <div className="setting-menu-toLikedDisliked">
-              <a href="/interactions">Interactions</a>
-            </div>
-
-            <div className="settings-menu-toMatches">
-              <a href="/matches">Matches</a>
-            </div>
-
-            <div className="settings-menu-toChats">
-              <a href="/chats">Chats</a>
-            </div>
-
-            <div className="settings-menu-toProfile">
-              <a href="/profile">Profile</a>
-            </div>
-
-            <hr />
-
-            <div className="setting-menu-Logout">
-              <button className="logout-button" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
+      
+      {Settings}
       <motion.div
         className="card"
         drag="x"
